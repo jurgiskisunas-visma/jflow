@@ -1,0 +1,6 @@
+*.exe
+*.bak
+*.tmp
+.env
+.env.*
+scratch/

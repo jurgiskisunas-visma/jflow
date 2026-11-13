@@ -1,0 +1,41 @@
+{
+  "project": "ato",
+  "jira": { "host": "jira.visma.com", "keyPrefix": "ATO" },
+  "root": "D:\\Projects\\ATO",
+  "repos": ["core", "Recon", "taxation", "tna", "common.common", "common.infra", "common.dbfixes"],
+  "checks": {
+    "_note": "Per repo: build, lint and test commands. Not filled in yet; until then take them from each repo's CLAUDE.md and record what was run."
+  },
+  "reviewers": {
+    "code": "ato-agents:code-reviewer",
+    "testCoverage": "ato-agents:test-coverage-reviewer",
+    "featureFlag": "ato-agents:feature-flag-reviewer",
+    "security": "ato-agents:security-reviewer",
+    "architecture": "ato-agents:architect-reviewer",
+    "sceptic": "ato-agents:sceptic-reviewer"
+  },
+  "sensitivePaths": ["auth", "secret", "crypto", "token", "tenant", "shard", "migration", "sql", "saga", "bicep"],
+  "validationSlots": [
+    {
+      "name": "native",
+      "acquire": "pwsh -NoProfile -File C:/Users/jurgis.kisunas/.claude/hooks/jcrew-ui-lock.ps1 -Acquire -ProjectRoot D:\\Projects\\ATO -Task <key>",
+      "release": "pwsh -NoProfile -File C:/Users/jurgis.kisunas/.claude/hooks/jcrew-ui-lock.ps1 -Release -ProjectRoot D:\\Projects\\ATO -Task <key>",
+      "start": "agent ato-agents:service-runner",
+      "exercise": "agent ato-agents:ui-tester",
+      "stop": ""
+    },
+    {
+      "name": "aspire",
+      "_note": "Second stack on ports 15xxx in D:\\Projects\\ato-host; runs beside the native one. Not yet used by the pipeline: start.ps1 may not return, and the branch under test must be checked out in ato-host's own service folders.",
+      "acquire": "pwsh -NoProfile -File C:/Users/jurgis.kisunas/.claude/hooks/jcrew-ui-lock.ps1 -Acquire -ProjectRoot D:\\Projects\\ato-host -Task <key>",
+      "release": "pwsh -NoProfile -File C:/Users/jurgis.kisunas/.claude/hooks/jcrew-ui-lock.ps1 -Release -ProjectRoot D:\\Projects\\ato-host -Task <key>",
+      "start": "D:\\Projects\\ato-host\\start.ps1",
+      "exercise": "agent ato-agents:ui-tester against http://host.docker.internal:15019",
+      "stop": "D:\\Projects\\ato-host\\stop.ps1"
+    }
+  ],
+  "rules": [
+    "Every behaviour change sits behind a feature flag.",
+    "Stage explicit paths only."
+  ]
+}

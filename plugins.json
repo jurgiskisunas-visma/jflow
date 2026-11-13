@@ -1,0 +1,44 @@
+{
+  "marketplaces": [
+    { "name": "ato-claude-marketplace", "source": "Visma-AO-Solutions-AdvisoryTools/ato-claude-marketplace", "note": "private; needs gh auth" },
+    { "name": "caveman", "source": "JuliusBrussee/caveman" },
+    { "name": "karpathy-skills", "source": "forrestchang/andrej-karpathy-skills" },
+    { "name": "ai-workshop", "source": "https://github.com/Visma-Tech-LT/ai-workshop-marketplace" }
+  ],
+  "plugins": [
+    "superpowers@claude-plugins-official",
+    "context7@claude-plugins-official",
+    "claude-code-setup@claude-plugins-official",
+    "claude-md-management@claude-plugins-official",
+    "security-guidance@claude-plugins-official",
+    "csharp-lsp@claude-plugins-official",
+    "typescript-lsp@claude-plugins-official",
+    "mattpocock-skills@claude-plugins-official",
+    "andrej-karpathy-skills@karpathy-skills",
+    "caveman@caveman",
+    "sdw@ai-workshop",
+    "ato-workflow@ato-claude-marketplace",
+    "ato-agents@ato-claude-marketplace",
+    "ato-safety@ato-claude-marketplace",
+    "ato-maintenance@ato-claude-marketplace",
+    "ato-angular21@ato-claude-marketplace",
+    "ato-review-gate@ato-claude-marketplace",
+    "ato-post-push-watch@ato-claude-marketplace",
+    "ato-conventions@ato-claude-marketplace",
+    "ato-content@ato-claude-marketplace",
+    "ato-testdata@ato-claude-marketplace",
+    "ato-taxonomy@ato-claude-marketplace"
+  ],
+  "tools": [
+    { "command": "git", "winget": "Git.Git" },
+    { "command": "gh", "winget": "GitHub.cli" },
+    { "command": "go", "winget": "GoLang.Go" },
+    { "command": "node", "winget": "OpenJS.NodeJS.LTS" },
+    { "command": "dotnet", "winget": "Microsoft.DotNet.SDK.9" },
+    { "command": "az", "winget": "Microsoft.AzureCLI" }
+  ],
+  "languageServers": [
+    "dotnet tool install --global csharp-ls",
+    "npm install -g typescript-language-server typescript"
+  ]
+}

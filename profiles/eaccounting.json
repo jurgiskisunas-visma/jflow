@@ -1,0 +1,18 @@
+{
+  "project": "eaccounting",
+  "jira": { "host": "jira.visma.com", "keyPrefix": "VEA" },
+  "root": "D:\\Projects\\eaccounting",
+  "repos": ["."],
+  "checks": {
+    "_note": "Not filled in yet. Take build, lint and test commands from the repo's CLAUDE.md and record what was run."
+  },
+  "reviewers": {
+    "_note": "No project reviewers mapped yet. Use general-purpose reviewers with the repo's own rules until this is filled in."
+  },
+  "sensitivePaths": ["auth", "secret", "crypto", "token", "migration", "sql"],
+  "validationSlots": [],
+  "_slotsNote": "The repo has its own LocalDevSlot scheme (a port offset per slot). Not wired here yet; the local checkout is 537 commits behind and must be updated first.",
+  "rules": [
+    "Never resolve a review thread; that is the commenter's call."
+  ]
+}
