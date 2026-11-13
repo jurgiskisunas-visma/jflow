@@ -66,7 +66,7 @@ Thirteen research units and seven addenda: own configuration, the ATO marketplac
   - `jplan` was not on PATH in a session started before the install, and the skill named a fixed drive. Now `jplan` lives in `~/.claude/bin`, the planning root is stored in `~/.claude/jflow.json`, `jplan root` prints it, and the skill and `CLAUDE.md` ask for the root and name the fallback path.
   - A context compaction lost the ledger key, and `jplan set ATO-19607` failed because the task id was a slug. Intake now prints a `Ledger:` line that every report repeats, and `jplan` finds a task by its `jira` field.
   - Branch and commits carried the placeholder `ATO-10` until the real ticket arrived. The plan gate now asks for the ticket key.
-- Portability for other people: user-specific paths in the agents, commands, `jurgis-crew` and the ATO seed profile are `$HOME/.claude`; the installer takes `-PlanningRoot`, remembers it, and installs Go when it is missing.
+- Portability for other people: user-specific paths in the agents, commands, `j-crew` and the ATO seed profile are `$HOME/.claude`; the agents and the crew skill are named `j-the-problem-solver`, `j-the-implementer` and `j-crew`; the shared rules are a separate `jflow-rules.md` that a person's own `CLAUDE.md` imports; `plugins.json` is split into `core`, `ato` and `personal` sets; the installer takes `-PlanningRoot`, remembers it, and installs Go when it is missing.
 - Seen and not fixed: the plan was 1,600 words plus a 5 KB appendix against a 1,500 limit; `tokens` was never recorded on the task; a workflow that pushes images was reviewed at the light tier because the tier follows line count and `sensitivePaths` has no entry for CI workflows.
 
 ## 6. Improvement paths

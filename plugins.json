@@ -1,41 +1,48 @@
 {
+  "_note": "Every entry belongs to a set. install.ps1 installs 'core' by default; add sets with -PluginSets ato,personal or take all with -Personal.",
   "marketplaces": [
-    { "name": "ato-claude-marketplace", "source": "Visma-AO-Solutions-AdvisoryTools/ato-claude-marketplace", "note": "private; needs gh auth" },
-    { "name": "caveman", "source": "JuliusBrussee/caveman" },
-    { "name": "karpathy-skills", "source": "forrestchang/andrej-karpathy-skills" },
-    { "name": "ai-workshop", "source": "https://github.com/Visma-Tech-LT/ai-workshop-marketplace" }
+    { "name": "ato-claude-marketplace", "source": "Visma-AO-Solutions-AdvisoryTools/ato-claude-marketplace", "set": "ato", "note": "private; needs gh auth" },
+    { "name": "caveman", "source": "JuliusBrussee/caveman", "set": "personal" },
+    { "name": "karpathy-skills", "source": "forrestchang/andrej-karpathy-skills", "set": "personal" },
+    { "name": "ai-workshop", "source": "https://github.com/Visma-Tech-LT/ai-workshop-marketplace", "set": "personal" }
   ],
-  "plugins": [
-    "superpowers@claude-plugins-official",
-    "context7@claude-plugins-official",
-    "claude-code-setup@claude-plugins-official",
-    "claude-md-management@claude-plugins-official",
-    "security-guidance@claude-plugins-official",
-    "csharp-lsp@claude-plugins-official",
-    "typescript-lsp@claude-plugins-official",
-    "mattpocock-skills@claude-plugins-official",
-    "andrej-karpathy-skills@karpathy-skills",
-    "caveman@caveman",
-    "sdw@ai-workshop",
-    "ato-workflow@ato-claude-marketplace",
-    "ato-agents@ato-claude-marketplace",
-    "ato-safety@ato-claude-marketplace",
-    "ato-maintenance@ato-claude-marketplace",
-    "ato-angular21@ato-claude-marketplace",
-    "ato-review-gate@ato-claude-marketplace",
-    "ato-post-push-watch@ato-claude-marketplace",
-    "ato-conventions@ato-claude-marketplace",
-    "ato-content@ato-claude-marketplace",
-    "ato-testdata@ato-claude-marketplace",
-    "ato-taxonomy@ato-claude-marketplace"
-  ],
+  "plugins": {
+    "core": [
+      "superpowers@claude-plugins-official",
+      "context7@claude-plugins-official"
+    ],
+    "ato": [
+      "ato-workflow@ato-claude-marketplace",
+      "ato-agents@ato-claude-marketplace",
+      "ato-safety@ato-claude-marketplace",
+      "ato-maintenance@ato-claude-marketplace",
+      "ato-angular21@ato-claude-marketplace",
+      "ato-review-gate@ato-claude-marketplace",
+      "ato-post-push-watch@ato-claude-marketplace",
+      "ato-conventions@ato-claude-marketplace",
+      "ato-content@ato-claude-marketplace",
+      "ato-testdata@ato-claude-marketplace",
+      "ato-taxonomy@ato-claude-marketplace"
+    ],
+    "personal": [
+      "claude-code-setup@claude-plugins-official",
+      "claude-md-management@claude-plugins-official",
+      "security-guidance@claude-plugins-official",
+      "csharp-lsp@claude-plugins-official",
+      "typescript-lsp@claude-plugins-official",
+      "mattpocock-skills@claude-plugins-official",
+      "andrej-karpathy-skills@karpathy-skills",
+      "caveman@caveman",
+      "sdw@ai-workshop"
+    ]
+  },
   "tools": [
-    { "command": "git", "winget": "Git.Git" },
-    { "command": "gh", "winget": "GitHub.cli" },
-    { "command": "go", "winget": "GoLang.Go" },
-    { "command": "node", "winget": "OpenJS.NodeJS.LTS" },
-    { "command": "dotnet", "winget": "Microsoft.DotNet.SDK.9" },
-    { "command": "az", "winget": "Microsoft.AzureCLI" }
+    { "command": "git", "winget": "Git.Git", "set": "core" },
+    { "command": "gh", "winget": "GitHub.cli", "set": "core" },
+    { "command": "go", "winget": "GoLang.Go", "set": "core" },
+    { "command": "node", "winget": "OpenJS.NodeJS.LTS", "set": "ato" },
+    { "command": "dotnet", "winget": "Microsoft.DotNet.SDK.9", "set": "ato" },
+    { "command": "az", "winget": "Microsoft.AzureCLI", "set": "ato" }
   ],
   "languageServers": [
     "dotnet tool install --global csharp-ls",

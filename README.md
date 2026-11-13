@@ -20,6 +20,14 @@ pwsh -File D:\Projects\jflow\install.ps1
 
 `install.ps1` is safe to re-run. It installs missing tools with winget (Go included, which `jplan` needs to build), adds the marketplaces and plugins from `plugins.json`, copies `claude\` into `~/.claude` (a differing file is backed up to `~/.claude/backups/` first), registers the hooks in `settings.json`, tests and builds `jplan` into `~/.claude/bin`, puts that folder on the user PATH, seeds the planning root with the project profiles and runs the hook tests.
 
+### Who installs what
+
+| Command | For | Result |
+|---|---|---|
+| `install.ps1` | anyone | The flow, `jplan`, hooks, the `core` plugins (`superpowers`, `context7`). Your `~/.claude/CLAUDE.md` is kept; one line is added that imports `jflow-rules.md`. |
+| `install.ps1 -PluginSets ato` | ATO developers | The same, plus the ATO marketplace, its plugins and `node`, `dotnet`, `az`. Needs access to the private marketplace. |
+| `install.ps1 -Personal` | the owner | Every set, and `personal\CLAUDE.md` replaces `~/.claude/CLAUDE.md` (the old file is backed up). |
+
 ### Planning root
 
 The planning root holds the task ledger, the live profiles and the project notes. It is a per-machine choice:
@@ -34,15 +42,16 @@ Without the parameter the installer keeps the root it used before, and on a firs
 
 | Path | Content |
 |---|---|
-| `claude\CLAUDE.md` | User-level rules for every session |
+| `claude\jflow-rules.md` | The rules the flow needs in every session; imported from `~/.claude/CLAUDE.md` |
+| `personal\CLAUDE.md` | The owner's own user-level rules; installed only with `-Personal` |
 | `claude\skills\jflow` | Pipeline v2: implement, investigate and review tracks |
-| `claude\skills\*` | Other personal skills (`jurgis-crew`, `write-for-review`, `clean-code`, `harden-pr`, `friction-to-skill` and domain skills) |
+| `claude\skills\*` | Other personal skills (`j-crew`, `write-for-review`, `clean-code`, `harden-pr`, `friction-to-skill` and domain skills) |
 | `claude\agents` | JTPS (planner) and JTI (implementer) |
 | `claude\commands` | `/jflow`, `/jcrew`, `/jtps`, `/jti` |
 | `claude\hooks` | `user-guard.ps1` (secret-file guard and outbound approval gate), `jcrew-ui-lock.ps1` (validation slot lock), implementer gate, tests |
 | `jplan\` | The ledger tool in Go, with tests |
 | `profiles\` | Project profiles (`<project>.json`) and project notes (`<project>.md`); seeds for the planning root |
-| `plugins.json` | Marketplaces, plugins, tools and language servers this setup needs |
+| `plugins.json` | Marketplaces, plugins and tools in three sets: `core`, `ato`, `personal` |
 | `docs\` | How it works, build log, improvement paths |
 
 ## Daily use
@@ -76,6 +85,5 @@ Commit with a message that says why. The Improve step of `/jflow` proposes chang
 ## Known limits
 
 - Windows only: the hooks and the installer are PowerShell.
-- `claude\CLAUDE.md` is one person's rule file. The installer replaces `~/.claude/CLAUDE.md` with it (the old file goes to `~/.claude/backups/`), so someone else must merge their own rules back in.
-- `plugins.json` lists the private ATO marketplace; without access to it those installs are reported as problems and the rest still works.
+- The seed profile `profiles\ato.json` names reviewers from the `ato` plugin set; a project without that set needs its own reviewers in its profile.
 - The outbound gate's prompt has not been seen in a live session.

@@ -32,7 +32,7 @@ A batch runs stages 0 to 2 for every task first, then presents all plans at one 
 
 ## Track: implement
 
-**1. Plan.** Launch the planner (`jurgis-the-problem-solver`, read-only) with the task folder path. It writes `plan.md`: approach, files touched, tests, risks, rollout and flag, and where a real choice exists a minimal and a robust option. Plan length follows difficulty, and the planner states the class in the plan's first line:
+**1. Plan.** Launch the planner (`j-the-problem-solver`, read-only) with the task folder path. It writes `plan.md`: approach, files touched, tests, risks, rollout and flag, and where a real choice exists a minimal and a robust option. Plan length follows difficulty, and the planner states the class in the plan's first line:
 
 | Class | When | Limit |
 |---|---|---|
@@ -44,7 +44,7 @@ Only real difficulty earns the hard class; length is not thoroughness. A plan th
 
 **2. Plan gate (human).** Show: the approach in five lines, the options, the risks, what is not covered. Set `status=waiting next="approve plan"`. Stop until approved. Record the choice under Decisions in `plan.md`.
 
-**3. Implement.** Launch the implementer (`jurgis-the-implementer`) in its own worktree, with `plan.md` as the instruction. It commits after each work item. A question the plan does not settle comes back to you, not guessed.
+**3. Implement.** Launch the implementer (`j-the-implementer`) in its own worktree, with `plan.md` as the instruction. It commits after each work item. A question the plan does not settle comes back to you, not guessed.
 
 **4. Verify.** Run the profile's `checks` for each touched repo. Write `evidence\verify-<short-sha>.md`: commit, commands, real output tail, pass or fail. Review only starts on a commit with a passing verify file. Any new commit needs a new verify.
 

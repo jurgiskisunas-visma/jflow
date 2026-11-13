@@ -57,7 +57,7 @@ if ($Gates) {
 }
 
 $receipt = [ordered]@{
-    agent             = 'jurgis-the-implementer'
+    agent             = 'j-the-implementer'
     status            = if ($HandBack) { 'handback' } else { 'verified' }
     worktreeRoot      = $WorktreeRoot
     branch            = (& git -C $WorktreeRoot rev-parse --abbrev-ref HEAD 2>$null)

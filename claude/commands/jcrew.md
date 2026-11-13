@@ -3,7 +3,7 @@ description: JCREW — run JTPS planning and JTI implementation across several t
 argument-hint: <ATO-1 ATO-2 ATO-3 | list of tasks>
 ---
 
-Invoke the `jurgis-crew` skill and follow it for these tasks:
+Invoke the `j-crew` skill and follow it for these tasks:
 
 $ARGUMENTS
 
