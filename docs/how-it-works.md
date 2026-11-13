@@ -59,6 +59,16 @@ Thirteen research units and seven addenda: own configuration, the ATO marketplac
 - e-accounting's slot idea checked against ATO. Usable today: two stacks side by side (native on 5xxx, Aspire on 15xxx), both now in the ATO profile. Numbered slots beyond two need a change in `ato-host` (ports are constants in `AtoEndpoints.cs`, and the CORS and login-redirect env files repeat them); parked in `IDEAS.md`.
 - Not yet verified: how the approval prompt behaves in a live session and in a session nobody is watching.
 
+### 2026-11-13: first real task and what it changed
+
+- First `/jflow` run: task `ato/core-docker-ci-speed` (later ATO-19607), Core Docker CI. Measured result: PR run 18m31s against 36 to 41 minutes, the same 8,163 tests, one core PR (#9585). The flow held where it mattered: measurements went to `notes\` before the plan, the plan gate was used twice (the human changed the option), review ran at the light tier and found one defect, evidence files are named after the commit, and every outbound text was drafted to `scratch\` and posted only after a yes.
+- What broke, and the fix made in the same day:
+  - `jplan` was not on PATH in a session started before the install, and the skill named a fixed drive. Now `jplan` lives in `~/.claude/bin`, the planning root is stored in `~/.claude/jflow.json`, `jplan root` prints it, and the skill and `CLAUDE.md` ask for the root and name the fallback path.
+  - A context compaction lost the ledger key, and `jplan set ATO-19607` failed because the task id was a slug. Intake now prints a `Ledger:` line that every report repeats, and `jplan` finds a task by its `jira` field.
+  - Branch and commits carried the placeholder `ATO-10` until the real ticket arrived. The plan gate now asks for the ticket key.
+- Portability for other people: user-specific paths in the agents, commands, `jurgis-crew` and the ATO seed profile are `$HOME/.claude`; the installer takes `-PlanningRoot`, remembers it, and installs Go when it is missing.
+- Seen and not fixed: the plan was 1,600 words plus a 5 KB appendix against a 1,500 limit; `tokens` was never recorded on the task; a workflow that pushes images was reviewed at the light tier because the tier follows line count and `sensitivePaths` has no entry for CI workflows.
+
 ## 6. Improvement paths
 
 - Measure first: tokens and wall time per task, review passes per ticket, findings accepted against findings raised.

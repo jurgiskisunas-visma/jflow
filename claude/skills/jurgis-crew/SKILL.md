@@ -24,7 +24,7 @@ State one line before launching: task count, repo(s), the UI-slot status (`jcrew
 
 ## Step 2 — Check the task list
 
-Resolve each input to a Jira key, a description, or an existing approach document at `C:/Users/jurgis.kisunas/.claude/jurgis/plans/<KEY>-approach.md`.
+Resolve each input to a Jira key, a description, or an existing approach document at `$HOME/.claude/jurgis/plans/<KEY>-approach.md`.
 
 For more than one task, verify independence — disjoint file sets. Overlapping tasks get chained or merged.
 
@@ -84,7 +84,7 @@ Flag check, on the worktree diff, by reading: every new path gated, the flag is 
 Every task that passed Step 6 now queues for the project's single validation slot:
 
 ```
-pwsh -NoProfile -File C:/Users/jurgis.kisunas/.claude/hooks/jcrew-ui-lock.ps1 -Acquire -ProjectRoot <project root> -Task <KEY>
+pwsh -NoProfile -File $HOME/.claude/hooks/jcrew-ui-lock.ps1 -Acquire -ProjectRoot <project root> -Task <KEY>
 ```
 
 It blocks, printing one status line per 30 seconds, until the slot is free, then holds it. Exit 3 after 120 minutes means give up and tell the user who is holding it. Another `/jcrew` in another session shares the same queue — that is the point.
@@ -182,7 +182,7 @@ On a green Step 10b:
 6. Release the slot:
 
 ```
-pwsh -NoProfile -File C:/Users/jurgis.kisunas/.claude/hooks/jcrew-ui-lock.ps1 -Release -ProjectRoot <project root> -Task <KEY>
+pwsh -NoProfile -File $HOME/.claude/hooks/jcrew-ui-lock.ps1 -Release -ProjectRoot <project root> -Task <KEY>
 ```
 
 **Release on every exit path** — success, fix loop, hand-back, user abort. A slot held by a dead run blocks everyone for 150 minutes.

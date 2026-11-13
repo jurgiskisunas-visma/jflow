@@ -9,7 +9,7 @@ $ARGUMENTS
 
 Resolving the instruction document:
 - If the argument is a file path, pass it through.
-- If it is a Jira key, the plan lives at `C:/Users/jurgis.kisunas/.claude/jurgis/plans/<KEY>-approach.md`. Confirm the file exists and pass that path.
+- If it is a Jira key, the plan lives at `$HOME/.claude/jurgis/plans/<KEY>-approach.md`. Confirm the file exists and pass that path.
 - If no instruction document exists, say so and offer to run `/jtps` first. Do not let JTI invent the plan itself.
 
 Also pass the current repo path, and — if the working tree is on a feature branch already — that branch, so JTI does not create another one.

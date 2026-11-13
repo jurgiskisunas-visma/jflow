@@ -9,6 +9,6 @@ $ARGUMENTS
 
 If no argument was given, ask which Jira key or task description to work on before launching.
 
-Pass the current repo path. The agent writes its document to `C:/Users/jurgis.kisunas/.claude/jurgis/plans/<KEY>-approach.md`.
+Pass the current repo path. The agent writes its document to `$HOME/.claude/jurgis/plans/<KEY>-approach.md`.
 
 Do not do the analysis yourself in the main thread — the agent owns it. When it returns, relay its summary — including the `Feature flag:` and `Scope vs ticket:` lines — and the path to the instruction document, and offer to hand that document to `/jti`.

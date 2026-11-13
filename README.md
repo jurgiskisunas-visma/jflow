@@ -18,7 +18,17 @@ pwsh -File D:\Projects\jflow\install.ps1
 4. Open a new terminal and restart Claude Code.
 5. Do the steps under "Not automated".
 
-`install.ps1` is safe to re-run. It installs missing tools with winget, adds the marketplaces and plugins from `plugins.json`, copies `claude\` into `~/.claude` (a differing file is backed up to `~/.claude/backups/` first), registers the hooks in `settings.json`, tests and builds `jplan`, puts it on the user PATH, seeds the planning root with the project profiles and runs the hook tests.
+`install.ps1` is safe to re-run. It installs missing tools with winget (Go included, which `jplan` needs to build), adds the marketplaces and plugins from `plugins.json`, copies `claude\` into `~/.claude` (a differing file is backed up to `~/.claude/backups/` first), registers the hooks in `settings.json`, tests and builds `jplan` into `~/.claude/bin`, puts that folder on the user PATH, seeds the planning root with the project profiles and runs the hook tests.
+
+### Planning root
+
+The planning root holds the task ledger, the live profiles and the project notes. It is a per-machine choice:
+
+```powershell
+pwsh -File D:\Projects\jflow\install.ps1 -PlanningRoot E:\plans
+```
+
+Without the parameter the installer keeps the root it used before, and on a first run it uses `~/project-planning`. The choice is stored in `~/.claude/jflow.json`. `jplan root` prints it, and the skills ask `jplan` for the root, so no file names a drive. `JPLAN_ROOT` overrides the file for one shell.
 
 ## What is in here
 
@@ -59,12 +69,13 @@ Commit with a message that says why. The Improve step of `/jflow` proposes chang
 
 - **MCP servers.** Playwriter, Azure, Confluence, the SQL servers and the claude.ai connectors (Jira, Slack) are configured per machine and hold credentials. Set them up with `claude mcp` and the claude.ai connector settings.
 - **Language servers.** The two commands under `languageServers` in `plugins.json`.
-- **Task data.** The planning root (`D:\project-planning`: tasks, research, ideas, live profiles and notes) is not in this repo. Restore it from its own backup.
-- **Repos.** Clone the ATO and e-accounting repos; the paths in `profiles\*.json` expect `D:\Projects\ATO`, `D:\Projects\ato-host` and `D:\Projects\eaccounting`.
+- **Task data.** The planning root (tasks, research, ideas, live profiles and notes) is not in this repo. Restore it from its own backup.
+- **Repos.** Clone the ATO and e-accounting repos. The seed profiles in `profiles\*.json` name `D:\Projects\ATO`, `D:\Projects\ato-host` and `D:\Projects\eaccounting`; with other paths, edit the live profile in `<planning root>\_profiles\`, or let `/jflow` ask and fix it on first use.
 - **Other `settings.json` values.** Permission mode, auto-mode rules and effort level are not copied.
 
 ## Known limits
 
 - Windows only: the hooks and the installer are PowerShell.
-- The user path `C:/Users/jurgis.kisunas` is hardcoded in JTPS, JTI, two commands, `jurgis-crew` and `profiles\ato.json`.
-- `/jflow` has not run on a real task yet. The outbound gate's prompt has not been seen in a live session.
+- `claude\CLAUDE.md` is one person's rule file. The installer replaces `~/.claude/CLAUDE.md` with it (the old file goes to `~/.claude/backups/`), so someone else must merge their own rules back in.
+- `plugins.json` lists the private ATO marketplace; without access to it those installs are reported as problems and the rest still works.
+- The outbound gate's prompt has not been seen in a live session.

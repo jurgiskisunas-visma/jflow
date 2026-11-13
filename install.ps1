@@ -2,12 +2,13 @@
 # and the planning root. Safe to re-run; existing files that differ are backed up first.
 #
 #   pwsh -File install.ps1                      full setup
+#   pwsh -File install.ps1 -PlanningRoot E:\plans    put the task ledger somewhere else (remembered for later runs)
 #   pwsh -File install.ps1 -SkipTools -SkipPlugins   only sync the repo's files into ~/.claude and rebuild jplan
 #   pwsh -File install.ps1 -WhatIf              show what would change
 
 [CmdletBinding(SupportsShouldProcess)]
 param(
-    [string]$PlanningRoot = 'D:\project-planning',
+    [string]$PlanningRoot,
     [switch]$SkipTools,
     [switch]$SkipPlugins
 )
@@ -15,6 +16,13 @@ param(
 $ErrorActionPreference = 'Stop'
 $repo = $PSScriptRoot
 $claudeHome = Join-Path $HOME '.claude'
+$configPath = Join-Path $claudeHome 'jflow.json'
+
+# Same order as jplan: environment, then the config file, then the home folder.
+if (-not $PlanningRoot) { $PlanningRoot = [Environment]::GetEnvironmentVariable('JPLAN_ROOT', 'User') }
+if (-not $PlanningRoot -and (Test-Path $configPath)) { $PlanningRoot = (Get-Content $configPath -Raw | ConvertFrom-Json).planningRoot }
+if (-not $PlanningRoot) { $PlanningRoot = Join-Path $HOME 'project-planning' }
+$PlanningRoot = [IO.Path]::GetFullPath($PlanningRoot)
 $manifest = Get-Content (Join-Path $repo 'plugins.json') -Raw | ConvertFrom-Json
 $problems = [Collections.Generic.List[string]]::new()
 
@@ -30,9 +38,11 @@ if (-not $SkipTools) {
         if (Get-Command $tool.command -ErrorAction SilentlyContinue) { Write-Host "ok       $($tool.command)"; continue }
         if ($PSCmdlet.ShouldProcess($tool.winget, 'winget install')) {
             winget install --id $tool.winget --silent --accept-package-agreements --accept-source-agreements | Out-Null
-            if ($LASTEXITCODE -eq 0) { Write-Host "installed $($tool.command) (open a new terminal for PATH)" } else { $problems.Add("winget install $($tool.winget) failed") }
+            if ($LASTEXITCODE -eq 0) { Write-Host "installed $($tool.command)" } else { $problems.Add("winget install $($tool.winget) failed") }
         }
     }
+    # Pick up what winget just put on PATH, so the jplan build below works in this same run.
+    $env:Path = [Environment]::GetEnvironmentVariable('Path', 'Machine') + ';' + [Environment]::GetEnvironmentVariable('Path', 'User')
     foreach ($cmd in $manifest.languageServers) { Write-Host "manual   $cmd" }
 }
 
@@ -99,22 +109,33 @@ if ($settingsText -match 'user-guard\.ps1' -and $settingsText -match 'jti-gate\.
 }
 
 Step 'jplan'
-$bin = Join-Path $PlanningRoot '_tools\bin'
+$bin = Join-Path $claudeHome 'bin'
 $go = (Get-Command go -ErrorAction SilentlyContinue)?.Source ?? 'C:\Program Files\Go\bin\go.exe'
+if (-not (Test-Path $go) -and (Get-Command winget -ErrorAction SilentlyContinue) -and $PSCmdlet.ShouldProcess('GoLang.Go', 'winget install')) {
+    winget install --id GoLang.Go --silent --accept-package-agreements --accept-source-agreements | Out-Null
+}
+if ($PSCmdlet.ShouldProcess($configPath, "set planningRoot to $PlanningRoot")) {
+    @{ planningRoot = $PlanningRoot } | ConvertTo-Json | Set-Content $configPath -Encoding utf8
+    Write-Host "planning root: $PlanningRoot"
+    if ([Environment]::GetEnvironmentVariable('JPLAN_ROOT', 'User')) { [Environment]::SetEnvironmentVariable('JPLAN_ROOT', $PlanningRoot, 'User') }
+}
 if (-not (Test-Path $go)) {
-    $problems.Add('go not found; open a new terminal and re-run to build jplan')
+    $problems.Add('go not found and winget could not install it; install Go (https://go.dev/dl) and re-run to build jplan')
 } elseif ($PSCmdlet.ShouldProcess((Join-Path $bin 'jplan.exe'), 'build')) {
     New-Item -ItemType Directory -Force $bin | Out-Null
     & $go test -C (Join-Path $repo 'jplan') ./... | Select-Object -Last 1 | Write-Host
     if ($LASTEXITCODE -ne 0) { $problems.Add('jplan tests failed') }
     & $go build -C (Join-Path $repo 'jplan') -ldflags '-s -w' -o (Join-Path $bin 'jplan.exe') .
     if ($LASTEXITCODE -ne 0) { $problems.Add('jplan build failed') }
+    # Earlier versions kept the binary inside the planning root; that PATH entry would shadow the new one.
+    $oldBin = Join-Path $PlanningRoot '_tools\bin'
     $userPath = [Environment]::GetEnvironmentVariable('Path', 'User')
-    if (($userPath -split ';') -notcontains $bin) {
-        [Environment]::SetEnvironmentVariable('Path', ($userPath.TrimEnd(';') + ';' + $bin), 'User')
-        Write-Host "added $bin to the user PATH (open a new terminal)"
+    $entries = @($userPath -split ';' | Where-Object { $_ -and $_ -ne $oldBin })
+    if ($entries -notcontains $bin) { $entries += $bin }
+    if (($entries -join ';') -ne $userPath.TrimEnd(';')) {
+        [Environment]::SetEnvironmentVariable('Path', ($entries -join ';'), 'User')
+        Write-Host "user PATH now has $bin (open a new terminal)"
     }
-    if ($PlanningRoot -ne 'D:\project-planning') { [Environment]::SetEnvironmentVariable('JPLAN_ROOT', $PlanningRoot, 'User') }
 }
 
 Step 'Planning root'

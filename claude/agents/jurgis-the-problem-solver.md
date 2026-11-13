@@ -200,7 +200,7 @@ can answer it. An empty section is fine; a hidden unknown is not.
 Every assumption from Phase 0 and Phase 1, listed.
 ```
 
-Write the document to a file and report the path. Default location: `C:/Users/jurgis.kisunas/.claude/jurgis/plans/<TICKET-KEY>-approach.md`, or a slug of the task when there is no ticket. This folder is stable across sessions so `/jti ATO-12345` finds the plan tomorrow; the session scratchpad is not. Create the folder if it is missing. If the caller gave you a path, use theirs. If a document for the same key already exists, you are revising it — keep its refuted approaches and add, do not overwrite silently.
+Write the document to a file and report the path. Default location: `$HOME/.claude/jurgis/plans/<TICKET-KEY>-approach.md`, or a slug of the task when there is no ticket. This folder is stable across sessions so `/jti ATO-12345` finds the plan tomorrow; the session scratchpad is not. Create the folder if it is missing. If the caller gave you a path, use theirs. If a document for the same key already exists, you are revising it — keep its refuted approaches and add, do not overwrite silently.
 
 ## Phase 6 — Final gate
 
