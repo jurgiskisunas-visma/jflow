@@ -74,7 +74,9 @@ if (-not $SkipPlugins) {
 
 Step 'Personal Claude files'
 $backup = Join-Path $claudeHome ("backups\jflow-" + (Get-Date -Format 'yyyyMMdd-HHmmss'))
-$source = Join-Path $repo 'claude'
+# A set's own files (sets\<set>\claude) are installed only when that set is selected.
+$sources = @(Join-Path $repo 'claude') + @($sets | ForEach-Object { Join-Path $repo "sets\$_\claude" } | Where-Object { Test-Path $_ })
+foreach ($source in $sources) {
 foreach ($file in Get-ChildItem $source -Recurse -File) {
     $relative = $file.FullName.Substring($source.Length + 1)
     $target = Join-Path $claudeHome $relative
@@ -91,6 +93,7 @@ foreach ($file in Get-ChildItem $source -Recurse -File) {
         Copy-Item $file.FullName $target -Force
         Write-Host "copied   $relative"
     }
+}
 }
 
 Step 'CLAUDE.md'
@@ -184,7 +187,8 @@ Step 'Planning root'
 $profiles = Join-Path $PlanningRoot '_profiles'
 if ($PSCmdlet.ShouldProcess($profiles, 'create and seed missing profiles')) {
     New-Item -ItemType Directory -Force $profiles | Out-Null
-    foreach ($file in Get-ChildItem (Join-Path $repo 'profiles') -File) {
+    $seeds = $sets | ForEach-Object { Join-Path $repo "sets\$_\profiles" } | Where-Object { Test-Path $_ }
+    foreach ($file in $seeds | ForEach-Object { Get-ChildItem $_ -File }) {
         $target = Join-Path $profiles $file.Name
         if (-not (Test-Path $target)) { Copy-Item $file.FullName $target; Write-Host "seeded   $($file.Name)" }
     }

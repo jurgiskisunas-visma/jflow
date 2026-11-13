@@ -1,5 +1,5 @@
 {
-  "_note": "Every entry belongs to a set. install.ps1 installs 'core' by default; add sets with -PluginSets ato,personal or take all with -Personal.",
+  "_note": "Every entry belongs to a set. install.ps1 installs 'core' by default; add sets with -PluginSets ato,personal or take all with -Personal. A project set (ato, eaccounting) is for that project's repos only: its plugins, the skills in sets\\<set>\\claude and the seed profile in sets\\<set>\\profiles are installed only with the set, and the flow uses them only for tasks of that project.",
   "marketplaces": [
     { "name": "ato-claude-marketplace", "source": "Visma-AO-Solutions-AdvisoryTools/ato-claude-marketplace", "set": "ato", "note": "private; needs gh auth" },
     { "name": "caveman", "source": "JuliusBrussee/caveman", "set": "personal" },
@@ -24,6 +24,7 @@
       "ato-testdata@ato-claude-marketplace",
       "ato-taxonomy@ato-claude-marketplace"
     ],
+    "eaccounting": [],
     "personal": [
       "claude-code-setup@claude-plugins-official",
       "claude-md-management@claude-plugins-official",
