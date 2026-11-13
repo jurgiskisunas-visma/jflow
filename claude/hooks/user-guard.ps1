@@ -60,9 +60,11 @@ foreach ($m in $gitAdd.Matches($cmd)) {
     $tokens = @($m.Groups[1].Value -split '\s+' | Where-Object { $_ } | ForEach-Object { $_.Trim('"', "'") })
     if ($tokens -ccontains '-u' -or $tokens -contains '--update') { continue }
     foreach ($t in $tokens) {
-        $sweeps = $t -cmatch '^-[a-zA-Z]*A[a-zA-Z]*$' -or
-                  $t -in @('--all', '--no-ignore-removal') -or
-                  $t -match '^(\.|\./|\.\\|:/|\*|:\(top\))$'
+        # git accepts unique prefixes of long options (--al, --no-ignore-rem).
+        $longSweep = $t.Length -ge 3 -and ('--all'.StartsWith($t) -or ($t.Length -ge 6 -and '--no-ignore-removal'.StartsWith($t)))
+        $fromFile = $t -match '^--pathspec-f'
+        $sweeps = $t -cmatch '^-[a-zA-Z]*A[a-zA-Z]*$' -or $longSweep -or $fromFile -or
+                  $t -match '^(\.[\\/]*|(\.[\\/])+\.?|:/|:\(top[^)]*\)|\*(\.\*)?)$'
         if ($sweeps) {
             Deny @'
 BLOCKED: `git add` that sweeps the tree (-A, --all, ., ./, :/, *).
@@ -75,10 +77,13 @@ PATs, taxation/docs/local-secrets-*.md). Run `git status`, then stage explicit p
 }
 
 # 2. sqlcmd against a non-local server — local dev use is routine, remote writes are not.
-if ($cmd -match '\bsqlcmd\b') {
-    $serverMatch = [regex]::Match($cmd, '(?:-S|--server)\s+"?([^"\s]+)"?')
-    if ($serverMatch.Success) {
-        $server = $serverMatch.Groups[1].Value
+#    -S stays case-sensitive: -s is sqlcmd's column separator.
+if ($cmd -match '(?i)\b(sqlcmd|Invoke-Sqlcmd)\b') {
+    $servers = @(
+        [regex]::Matches($cmd, '(?:(?i:\s--server|\s-ServerInstance)|\s-S|\s/S)\s*[:=]?\s*["'']?([^"''\s]+)') +
+        [regex]::Matches($cmd, '(?i)SQLCMDSERVER\s*=\s*["'']?([^"''\s;]+)')
+    ) | ForEach-Object { $_.Groups[1].Value }
+    foreach ($server in $servers) {
         $isLocal = $server -match '^(?i)(\(localdb\)|localhost|127\.0\.0\.1|\.|\(local\)|tcp:localhost|tcp:127\.0\.0\.1)([\\,].*)?$'
         if (-not $isLocal) {
             Deny "BLOCKED: sqlcmd against non-local server '$server'. Local dev databases only from an agent. Run remote/prod queries yourself, or use a read-only MCP query tool."
@@ -95,7 +100,7 @@ if ($cmd -match '(?i)\bgh(?:\.exe)?\s+issue\s+(comment|create|close)\b') { Ask "
 $ghApi = [regex]::Match($cmd, '(?i)\bgh(?:\.exe)?\s+api\b([^|;&\r\n]*)')
 if ($ghApi.Success) {
     $apiArgs = $ghApi.Groups[1].Value
-    $methodMatch = [regex]::Match($apiArgs, '(?i)(?:-X|--method)[\s=]+"?(\w+)')
+    $methodMatch = [regex]::Match($apiArgs, '(?i)(?:-X|--method)[\s=]*["'']?([A-Za-z]+)')
     $hasFields = $apiArgs -cmatch '(^|\s)(-f|-F|--field|--raw-field|--input)(\s|=)'
     if ($apiArgs -match '(?i)\bgraphql\b') {
         # A mutation kept in a file cannot be read here, so a file-fed query asks too.
