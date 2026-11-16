@@ -1,11 +1,11 @@
 ---
-name: jurgis-crew
+name: j-crew
 description: The full pipeline for getting work done — plan (JTPS), implement in a worktree (JTI), then queue for the project's single UI-validation slot, land the branch in the main checkout, build, run services, validate in a real browser, open a draft PR, and report back in plain language. One task end to end, or several in parallel up to the UI slot. Use for "run the crew", "/jcrew", "plan and implement this ticket", "take ATO-12345 all the way", "do all of these in parallel", "batch these tasks".
 ---
 
-# Jurgis crew — plan, build, prove, explain
+# J crew — plan, build, prove, explain
 
-`jurgis-the-problem-solver` (JTPS) plans. `jurgis-the-implementer` (JTI) builds. This skill runs the pipeline around them and owns the one thing that cannot be parallelised: the project's main checkout, its running services and the browser.
+`j-the-problem-solver` (JTPS) plans. `j-the-implementer` (JTI) builds. This skill runs the pipeline around them and owns the one thing that cannot be parallelised: the project's main checkout, its running services and the browser.
 
 **Mental model.** A *project root* (for example `D:\Projects\ATO`, or `D:\Projects\eaccounting`) is one unit. Its repos may be many, but it has one main checkout per repo, one set of services, one browser. Code is written in worktrees, as many at a time as you like. Validation happens in the main checkout, **one task at a time, per project root** — a queue, not a race.
 
@@ -24,7 +24,7 @@ State one line before launching: task count, repo(s), the UI-slot status (`jcrew
 
 ## Step 2 — Check the task list
 
-Resolve each input to a Jira key, a description, or an existing approach document at `C:/Users/jurgis.kisunas/.claude/jurgis/plans/<KEY>-approach.md`.
+Resolve each input to a Jira key, a description, or an existing approach document at `$HOME/.claude/j/plans/<KEY>-approach.md`.
 
 For more than one task, verify independence — disjoint file sets. Overlapping tasks get chained or merged.
 
@@ -47,7 +47,7 @@ If a repo's `CLAUDE.md` says worktrees cannot build there at all, the fallback i
 
 ## Step 3 — Plan (JTPS)
 
-One `jurgis-the-problem-solver` per task, all in a single message, up to 12. Each gets: ticket key or description, **the worktree path as the code to read**, the skill inventory, the plan output path. JTPS reads the worktree, not the main checkout — the plan must describe the code as it is on `origin/<default>`.
+One `j-the-problem-solver` per task, all in a single message, up to 12. Each gets: ticket key or description, **the worktree path as the code to read**, the skill inventory, the plan output path. JTPS reads the worktree, not the main checkout — the plan must describe the code as it is on `origin/<default>`.
 
 JTPS runs its review lenses itself and launches at most one `sceptic-reviewer`, only for boundary-touching changes. If you see it spawning code reviewers at a plan, that is a regression — stop it.
 
@@ -71,7 +71,7 @@ Confirm the Step 2b provisioning finished green (build output in hand). If it di
 
 JTI runs on **Sonnet** — cheap and fast, because the thinking happened in the plan. It follows the plan literally and makes no design decisions: anything the plan does not settle comes back as `blocked` with a question, anything the plan gets wrong comes back as `handed back to JTPS`. That is the deal that makes the cheap model safe. Do not "help" it by answering design questions yourself — route them to JTPS (a plan revision request) or to the user.
 
-One `jurgis-the-implementer` per task, up to 4 concurrent, each given: plan path, worktree path and branch, the skill inventory. When a plan lists two or more **independent** workstreams and only one task is running, you may launch one JTI per workstream on the same plan with `workstream=<name>`, each in its own worktree; merge in the plan's order afterwards. Several tasks → one JTI each, workstreams sequential.
+One `j-the-implementer` per task, up to 4 concurrent, each given: plan path, worktree path and branch, the skill inventory. When a plan lists two or more **independent** workstreams and only one task is running, you may launch one JTI per workstream on the same plan with `workstream=<name>`, each in its own worktree; merge in the plan's order afterwards. Several tasks → one JTI each, workstreams sequential.
 
 JTI edits, tests, builds, commits, self-checks the diff once against `write-for-review`, and returns `done implementing`, `handed back to JTPS`, or `blocked`. **No review agents run here.** The reviewers' checklist is baked into what JTI writes; the actual review happens once, at Step 10b, on the whole branch, before the PR.
 
@@ -84,7 +84,7 @@ Flag check, on the worktree diff, by reading: every new path gated, the flag is 
 Every task that passed Step 6 now queues for the project's single validation slot:
 
 ```
-pwsh -NoProfile -File C:/Users/jurgis.kisunas/.claude/hooks/jcrew-ui-lock.ps1 -Acquire -ProjectRoot <project root> -Task <KEY>
+pwsh -NoProfile -File $HOME/.claude/hooks/jcrew-ui-lock.ps1 -Acquire -ProjectRoot <project root> -Task <KEY>
 ```
 
 It blocks, printing one status line per 30 seconds, until the slot is free, then holds it. Exit 3 after 120 minutes means give up and tell the user who is holding it. Another `/jcrew` in another session shares the same queue — that is the point.
@@ -182,7 +182,7 @@ On a green Step 10b:
 6. Release the slot:
 
 ```
-pwsh -NoProfile -File C:/Users/jurgis.kisunas/.claude/hooks/jcrew-ui-lock.ps1 -Release -ProjectRoot <project root> -Task <KEY>
+pwsh -NoProfile -File $HOME/.claude/hooks/jcrew-ui-lock.ps1 -Release -ProjectRoot <project root> -Task <KEY>
 ```
 
 **Release on every exit path** — success, fix loop, hand-back, user abort. A slot held by a dead run blocks everyone for 150 minutes.

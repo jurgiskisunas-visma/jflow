@@ -43,6 +43,31 @@ func TestNewSetLsIndex(t *testing.T) {
 	}
 }
 
+func TestRootResolutionAndJiraLookup(t *testing.T) {
+	home := t.TempDir()
+	if got := resolveRoot("", home); got != filepath.Join(home, "project-planning") {
+		t.Fatalf("default root: %s", got)
+	}
+	os.MkdirAll(filepath.Join(home, ".claude"), 0o755)
+	os.WriteFile(filepath.Join(home, ".claude", "jflow.json"), []byte("\ufeff{\"planningRoot\": \"E:\\\\plans\"}"), 0o644)
+	if got := resolveRoot("", home); got != `E:\plans` {
+		t.Fatalf("config root: %s", got)
+	}
+	if got := resolveRoot(`F:\env`, home); got != `F:\env` {
+		t.Fatalf("env root wins: %s", got)
+	}
+
+	root := t.TempDir()
+	if got := strings.TrimSpace(pp(t, root, "root")); got != root {
+		t.Fatalf("root command: %s", got)
+	}
+	pp(t, root, "new", "ato", "ci-speed", "jira=ATO-77")
+	pp(t, root, "set", "ato-77", "status=active")
+	if show := pp(t, root, "show", "ATO-77"); !strings.Contains(show, `"id": "ci-speed"`) {
+		t.Fatalf("show by jira key:\n%s", show)
+	}
+}
+
 func TestRejectsBadInput(t *testing.T) {
 	root := t.TempDir()
 	pp(t, root, "new", "ato", "ATO-1")

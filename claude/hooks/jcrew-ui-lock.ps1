@@ -1,8 +1,8 @@
-# One UI-validation slot per project root (for example D:\Projects\ATO).
+# One UI-validation slot per project root (the folder that holds the project's main checkout).
 #
 # The main checkout, its build, its running services and the browser are one
 # shared unit per project. Whoever holds the lock may touch them; everyone else
-# waits. Locks live under $TEMP/claude/jcrew-locks, one file per project root.
+# waits. Locks live under ~/.claude/state/jcrew-locks, one file per project root.
 #
 #   -Acquire  blocks (polling, one status line per poll) until the slot is free,
 #             then takes it. Exit 0 = held. Exit 3 = gave up after -TimeoutMinutes.
@@ -10,8 +10,8 @@
 #   -Status   prints who holds it, or "free". Exit 0.
 #
 # Usage:
-#   pwsh -NoProfile -File ~/.claude/hooks/jcrew-ui-lock.ps1 -Acquire -ProjectRoot D:\Projects\ATO -Task ATO-20097
-#   pwsh -NoProfile -File ~/.claude/hooks/jcrew-ui-lock.ps1 -Release -ProjectRoot D:\Projects\ATO -Task ATO-20097
+#   pwsh -NoProfile -File ~/.claude/hooks/jcrew-ui-lock.ps1 -Acquire -ProjectRoot <project root> -Task PROJ-123
+#   pwsh -NoProfile -File ~/.claude/hooks/jcrew-ui-lock.ps1 -Release -ProjectRoot <project root> -Task PROJ-123
 
 [CmdletBinding(DefaultParameterSetName = 'Status')]
 param(
@@ -27,15 +27,11 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-function Get-Sha256Hex([string]$Text) {
-    $bytes = [Text.Encoding]::UTF8.GetBytes($Text)
-    ([Security.Cryptography.SHA256]::Create().ComputeHash($bytes) | ForEach-Object { $_.ToString('x2') }) -join ''
-}
+. (Join-Path $PSScriptRoot 'jti-common.ps1')
 
 $normalized = (Resolve-Path -LiteralPath $ProjectRoot).Path.ToLowerInvariant().Replace('\', '/').TrimEnd('/')
-$lockDir = Join-Path $env:TEMP 'claude/jcrew-locks'
+$lockDir = Get-StateDir 'jcrew-locks'
 $lockPath = Join-Path $lockDir "$(Get-Sha256Hex $normalized).lock"
-New-Item -ItemType Directory -Force -Path $lockDir | Out-Null
 
 function Read-Lock {
     if (-not (Test-Path -LiteralPath $lockPath)) { return $null }

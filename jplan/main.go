@@ -1,8 +1,9 @@
-// jplanis the task ledger tool: one folder per task under the planning root,
+// jplan is the task ledger tool: one folder per task under the planning root,
 // task.json for structure, Markdown for notes, INDEX.md as a generated cache.
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -17,19 +18,21 @@ import (
 	"time"
 )
 
-const usage = `jplan- task ledger
+const usage = `jplan - task ledger
 
-  jplannew <project> <key-or-slug> [title=...] [type=implement|investigate|review] [field=value ...]
-  jplanls [all] [project=<name>]
-  jplanshow <key>
-  jplanset <key> field=value [field=value ...]     fields: status, next, title, type, jira, branch, worktree, pr, tokens, any other
-  jplanevent <key> <class> [note]                  record a retrospective event (correction, review-finding, rework, gate-failure, budget)
-  jplanstats [last=20]                             event classes across the most recent tasks
-  jplanidea <text>                                 park an idea in IDEAS.md
-  jplanindex                                       regenerate INDEX.md
-  jplanclean [apply] [days=14]                     sizes; removes scratch\ of done and dropped tasks (dry run without apply)
+  jplan new <project> <key-or-slug> [title=...] [type=implement|investigate|review] [field=value ...]
+  jplan ls [all] [project=<name>]
+  jplan show <key>                                  <key> is the task id, <project>/<id>, or its jira field
+  jplan set <key> field=value [field=value ...]     fields: status, next, title, type, jira, branch, worktree, pr, tokens, any other
+  jplan event <key> <class> [note]                  record a retrospective event (correction, review-finding, rework, gate-failure, budget)
+  jplan stats [last=20]                             event classes across the most recent tasks
+  jplan idea <text>                                 park an idea in IDEAS.md
+  jplan index                                       regenerate INDEX.md
+  jplan clean [apply] [days=14]                     sizes; removes scratch\ of done and dropped tasks (dry run without apply)
+  jplan root                                        print the planning root
 
-Root: %JPLAN_ROOT%, default D:\project-planning. Statuses: todo, active, waiting, review, done, dropped.
+Root: %JPLAN_ROOT%, else "planningRoot" in ~/.claude/jflow.json, else ~/project-planning.
+Statuses: todo, active, waiting, review, done, dropped.
 `
 
 var (
@@ -56,14 +59,29 @@ func (t task) s(key string) string {
 func (t task) open() bool { return t.s("status") != "done" && t.s("status") != "dropped" }
 
 func main() {
-	root := os.Getenv("JPLAN_ROOT")
-	if root == "" {
-		root = `D:\project-planning`
-	}
+	home, _ := os.UserHomeDir()
+	root := resolveRoot(os.Getenv("JPLAN_ROOT"), home)
 	if err := run(os.Args[1:], root, os.Stdout); err != nil {
 		fmt.Fprintln(os.Stderr, "jplan:", err)
 		os.Exit(1)
 	}
+}
+
+// The config file is read because a session started before install never sees the new environment variable.
+func resolveRoot(env, home string) string {
+	if env != "" {
+		return env
+	}
+	var cfg struct {
+		PlanningRoot string `json:"planningRoot"`
+	}
+	if data, err := os.ReadFile(filepath.Join(home, ".claude", "jflow.json")); err == nil {
+		data = bytes.TrimPrefix(data, []byte{0xEF, 0xBB, 0xBF})
+		if json.Unmarshal(data, &cfg) == nil && cfg.PlanningRoot != "" {
+			return cfg.PlanningRoot
+		}
+	}
+	return filepath.Join(home, "project-planning")
 }
 
 func run(args []string, root string, out io.Writer) error {
@@ -91,11 +109,14 @@ func run(args []string, root string, out io.Writer) error {
 		return writeIndex(root, out)
 	case "clean":
 		return cmdClean(root, pos, kv, out)
+	case "root":
+		fmt.Fprintln(out, root)
+		return nil
 	case "help", "-h", "--help":
 		fmt.Fprint(out, usage)
 		return nil
 	}
-	return fmt.Errorf("unknown command %q; run jplanhelp", args[0])
+	return fmt.Errorf("unknown command %q; run jplan help", args[0])
 }
 
 func splitArgs(args []string) (pos []string, kv map[string]string) {
@@ -179,6 +200,13 @@ func find(root, key string) (task, error) {
 			hits = append(hits, t)
 		}
 	}
+	if len(hits) == 0 {
+		for _, t := range tasks {
+			if t.s("jira") != "" && strings.EqualFold(t.s("jira"), key) {
+				hits = append(hits, t)
+			}
+		}
+	}
 	switch len(hits) {
 	case 0:
 		return task{}, fmt.Errorf("no task %q", key)
@@ -229,7 +257,7 @@ func apply(t task, kv map[string]string) error {
 
 func cmdNew(root string, pos []string, kv map[string]string, out io.Writer) error {
 	if len(pos) != 2 {
-		return errors.New("usage: jplannew <project> <key-or-slug> [title=...] [type=...]")
+		return errors.New("usage: jplan new <project> <key-or-slug> [title=...] [type=...]")
 	}
 	project, id := pos[0], pos[1]
 	if strings.ContainsAny(project+id, `/\:*?"<>| `) || strings.HasPrefix(project, "_") {
@@ -309,7 +337,7 @@ func clip(s string, n int) string {
 
 func cmdShow(root string, pos []string, out io.Writer) error {
 	if len(pos) != 1 {
-		return errors.New("usage: jplanshow <key>")
+		return errors.New("usage: jplan show <key>")
 	}
 	t, err := find(root, pos[0])
 	if err != nil {
@@ -330,7 +358,7 @@ func cmdShow(root string, pos []string, out io.Writer) error {
 
 func cmdSet(root string, pos []string, kv map[string]string, out io.Writer) error {
 	if len(pos) != 1 || len(kv) == 0 {
-		return errors.New("usage: jplanset <key> field=value [field=value ...]")
+		return errors.New("usage: jplan set <key> field=value [field=value ...]")
 	}
 	t, err := find(root, pos[0])
 	if err != nil {
@@ -348,7 +376,7 @@ func cmdSet(root string, pos []string, kv map[string]string, out io.Writer) erro
 
 func cmdEvent(root string, pos []string, out io.Writer) error {
 	if len(pos) < 2 {
-		return errors.New("usage: jplanevent <key> <class> [note]")
+		return errors.New("usage: jplan event <key> <class> [note]")
 	}
 	t, err := find(root, pos[0])
 	if err != nil {
@@ -417,11 +445,11 @@ func cmdStats(root string, kv map[string]string, out io.Writer) error {
 
 func cmdIdea(root string, pos []string, out io.Writer) error {
 	if len(pos) == 0 {
-		return errors.New("usage: jplanidea <text>")
+		return errors.New("usage: jplan idea <text>")
 	}
 	path := filepath.Join(root, "IDEAS.md")
 	if _, err := os.Stat(path); errors.Is(err, fs.ErrNotExist) {
-		if err := os.WriteFile(path, []byte("# Ideas\n\nParked ideas. Promote one with `jplannew`.\n\n"), 0o644); err != nil {
+		if err := os.WriteFile(path, []byte("# Ideas\n\nParked ideas. Promote one with `jplan new`.\n\n"), 0o644); err != nil {
 			return err
 		}
 	}
@@ -443,7 +471,7 @@ func writeIndex(root string, out io.Writer) error {
 		return err
 	}
 	var b strings.Builder
-	fmt.Fprintf(&b, "# Task index\n\nGenerated by `jplanindex` on %s. Do not edit; edit `task.json` or use `jplanset`.\n\n", now().Format("2006-01-02 15:04"))
+	fmt.Fprintf(&b, "# Task index\n\nGenerated by `jplan index` on %s. Do not edit; edit `task.json` or use `jplan set`.\n\n", now().Format("2006-01-02 15:04"))
 	b.WriteString("## Open\n\n| Project | Key | Type | Status | Updated | Next |\n|---|---|---|---|---|---|\n")
 	open := 0
 	var closed []task

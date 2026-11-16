@@ -1,6 +1,6 @@
-# JTI completion gate (SubagentStop hook, matcher: jurgis-the-implementer).
+# JTI completion gate (SubagentStop hook, matcher: j-the-implementer).
 #
-# Blocks jurgis-the-implementer from finishing when its verification receipt is
+# Blocks j-the-implementer from finishing when its verification receipt is
 # red, when new warnings are unjustified, when the worktree changed after the last
 # green run, or when it is stopping with a dirty tree and no receipt at all.
 # Silent no-op for every other agent.
@@ -118,9 +118,9 @@ try {
 
 # Defensive: the settings.json matcher already scopes this to JTI, but a
 # mis-scoped matcher must never gate an unrelated agent.
-if ($payload -and $payload.agent_type -and $payload.agent_type -ne 'jurgis-the-implementer') { Exit-Allow }
+if ($payload -and $payload.agent_type -and $payload.agent_type -ne 'j-the-implementer') { Exit-Allow }
 
-$receiptDir = Join-Path $env:TEMP 'claude/jti-gate'
+$receiptDir = Get-StateDir 'jti-gate'
 
 # Preferred: the receipt for the worktree the hook's cwd points at. Fallback: when
 # the subagent worked in its own worktree the hook may report the parent session's

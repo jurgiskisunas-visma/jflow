@@ -1,6 +1,6 @@
 # PreToolUse hook: deterministic guards for the mistakes that already cost real damage.
 # Registered in ~/.claude/settings.json. Fails open on anything unexpected.
-# Complements the ato-safety plugin (destructive DB/git/docker) — no overlap with its patterns.
+# Covers secret sweeps, remote SQL and outbound posts only; destructive DB/git/docker commands are left to a safety plugin.
 # Tests: hooks/tests/user-guard.tests.ps1
 
 [CmdletBinding()]
@@ -53,7 +53,7 @@ $cmd = [string]$payload.tool_input.command
 if ([string]::IsNullOrWhiteSpace($cmd)) { exit 0 }
 
 # 1. git add/stage that sweeps the tree — pulls untracked, non-gitignored secret files into commits.
-#    ATO-19012 pushed tna/build/docker/.env (live ghp_ tokens) this way; rotation followed.
+#    One such commit pushed a .env with live tokens; a rotation followed.
 #    Global options (-C <dir>, -c k=v, --git-dir=...) may sit between `git` and the subcommand.
 $gitAdd = [regex]'(?i)\bgit(?:\.exe)?(?:\s+(?:-[cC]\s+(?:"[^"]*"|''[^'']*''|\S+)|--?[\w-]+(?:=(?:"[^"]*"|\S+))?))*\s+(?:add|stage)\b([^|;&\r\n]*)'
 foreach ($m in $gitAdd.Matches($cmd)) {
@@ -68,8 +68,8 @@ foreach ($m in $gitAdd.Matches($cmd)) {
         if ($sweeps) {
             Deny @'
 BLOCKED: `git add` that sweeps the tree (-A, --all, ., ./, :/, *).
-ATO repos hold untracked, non-gitignored secret files (tna/build/docker/.env with live
-PATs, taxation/docs/local-secrets-*.md). Run `git status`, then stage explicit paths:
+Repos can hold untracked, non-gitignored secret files (a .env with live tokens, local
+secrets notes); a sweep commits them. Run `git status`, then stage explicit paths:
   git add <path1> <path2>
 '@
         }

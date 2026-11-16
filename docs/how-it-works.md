@@ -59,6 +59,19 @@ Thirteen research units and seven addenda: own configuration, the ATO marketplac
 - e-accounting's slot idea checked against ATO. Usable today: two stacks side by side (native on 5xxx, Aspire on 15xxx), both now in the ATO profile. Numbered slots beyond two need a change in `ato-host` (ports are constants in `AtoEndpoints.cs`, and the CORS and login-redirect env files repeat them); parked in `IDEAS.md`.
 - Not yet verified: how the approval prompt behaves in a live session and in a session nobody is watching.
 
+### 2026-11-13: first real task and what it changed
+
+- First `/jflow` run: task `ato/core-docker-ci-speed` (later ATO-19607), Core Docker CI. Measured result: PR run 18m31s against 36 to 41 minutes, the same 8,163 tests, one core PR (#9585). The flow held where it mattered: measurements went to `notes\` before the plan, the plan gate was used twice (the human changed the option), review ran at the light tier and found one defect, evidence files are named after the commit, and every outbound text was drafted to `scratch\` and posted only after a yes.
+- What broke, and the fix made in the same day:
+  - `jplan` was not on PATH in a session started before the install, and the skill named a fixed drive. Now `jplan` lives in `~/.claude/bin`, the planning root is stored in `~/.claude/jflow.json`, `jplan root` prints it, and the skill and `CLAUDE.md` ask for the root and name the fallback path.
+  - A context compaction lost the ledger key, and `jplan set ATO-19607` failed because the task id was a slug. Intake now prints a `Ledger:` line that every report repeats, and `jplan` finds a task by its `jira` field.
+  - Branch and commits carried the placeholder `ATO-10` until the real ticket arrived. The plan gate now asks for the ticket key.
+- Portability for other people: user-specific paths in the agents, commands, `j-crew` and the ATO seed profile are `$HOME/.claude`; the agents and the crew skill are named `j-the-problem-solver`, `j-the-implementer` and `j-crew`; the shared rules are a separate `jflow-rules.md` that a person's own `CLAUDE.md` imports; `plugins.json` is split into `core`, `ato` and `personal` sets; the installer takes `-PlanningRoot`, remembers it, and installs Go when it is missing.
+- ATO stays with ATO: ATO-only skills (`j-crew`, `harden-pr`, `write-for-review-ato`, three domain skills) and the project seed profiles live in `sets/<set>/` and are installed only with that set; `jflow` uses `ato-*` agents and skills only for a task whose project is `ato`. `write-for-review` was split into a generic core and the ATO half.
+- Cross-platform (2026-11-16): the installer and hooks run under PowerShell 7 on Windows, macOS and Linux. Tools come from winget or Homebrew; Go falls back to a private download under `~/.claude/tools`. Hooks use the system temp folder, not `%TEMP%`. Tested from scratch in a Linux container; macOS not tested.
+- Outbound gate, live check: `gh pr comment --help` in a T3 session ran without being blocked. Whether a prompt was shown is not visible to the agent, so the gate's value depends on the client's permission mode.
+- Seen and not fixed: the plan was 1,600 words plus a 5 KB appendix against a 1,500 limit; `tokens` was never recorded on the task; a workflow that pushes images was reviewed at the light tier because the tier follows line count and `sensitivePaths` has no entry for CI workflows.
+
 ## 6. Improvement paths
 
 - Measure first: tokens and wall time per task, review passes per ticket, findings accepted against findings raised.

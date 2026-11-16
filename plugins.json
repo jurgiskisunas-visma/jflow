@@ -1,41 +1,49 @@
 {
+  "_note": "Every entry belongs to a set. install.ps1 installs 'core' by default; add sets with -PluginSets ato,personal or take all with -Personal. A project set (ato, eaccounting) is for that project's repos only: its plugins, the skills in sets\\<set>\\claude and the seed profile in sets\\<set>\\profiles are installed only with the set, and the flow uses them only for tasks of that project.",
   "marketplaces": [
-    { "name": "ato-claude-marketplace", "source": "Visma-AO-Solutions-AdvisoryTools/ato-claude-marketplace", "note": "private; needs gh auth" },
-    { "name": "caveman", "source": "JuliusBrussee/caveman" },
-    { "name": "karpathy-skills", "source": "forrestchang/andrej-karpathy-skills" },
-    { "name": "ai-workshop", "source": "https://github.com/Visma-Tech-LT/ai-workshop-marketplace" }
+    { "name": "ato-claude-marketplace", "source": "Visma-AO-Solutions-AdvisoryTools/ato-claude-marketplace", "set": "ato", "note": "private; needs gh auth" },
+    { "name": "caveman", "source": "JuliusBrussee/caveman", "set": "personal" },
+    { "name": "karpathy-skills", "source": "forrestchang/andrej-karpathy-skills", "set": "personal" },
+    { "name": "ai-workshop", "source": "https://github.com/Visma-Tech-LT/ai-workshop-marketplace", "set": "personal" }
   ],
-  "plugins": [
-    "superpowers@claude-plugins-official",
-    "context7@claude-plugins-official",
-    "claude-code-setup@claude-plugins-official",
-    "claude-md-management@claude-plugins-official",
-    "security-guidance@claude-plugins-official",
-    "csharp-lsp@claude-plugins-official",
-    "typescript-lsp@claude-plugins-official",
-    "mattpocock-skills@claude-plugins-official",
-    "andrej-karpathy-skills@karpathy-skills",
-    "caveman@caveman",
-    "sdw@ai-workshop",
-    "ato-workflow@ato-claude-marketplace",
-    "ato-agents@ato-claude-marketplace",
-    "ato-safety@ato-claude-marketplace",
-    "ato-maintenance@ato-claude-marketplace",
-    "ato-angular21@ato-claude-marketplace",
-    "ato-review-gate@ato-claude-marketplace",
-    "ato-post-push-watch@ato-claude-marketplace",
-    "ato-conventions@ato-claude-marketplace",
-    "ato-content@ato-claude-marketplace",
-    "ato-testdata@ato-claude-marketplace",
-    "ato-taxonomy@ato-claude-marketplace"
-  ],
+  "plugins": {
+    "core": [
+      "superpowers@claude-plugins-official",
+      "context7@claude-plugins-official"
+    ],
+    "ato": [
+      "ato-workflow@ato-claude-marketplace",
+      "ato-agents@ato-claude-marketplace",
+      "ato-safety@ato-claude-marketplace",
+      "ato-maintenance@ato-claude-marketplace",
+      "ato-angular21@ato-claude-marketplace",
+      "ato-review-gate@ato-claude-marketplace",
+      "ato-post-push-watch@ato-claude-marketplace",
+      "ato-conventions@ato-claude-marketplace",
+      "ato-content@ato-claude-marketplace",
+      "ato-testdata@ato-claude-marketplace",
+      "ato-taxonomy@ato-claude-marketplace"
+    ],
+    "eaccounting": [],
+    "personal": [
+      "claude-code-setup@claude-plugins-official",
+      "claude-md-management@claude-plugins-official",
+      "security-guidance@claude-plugins-official",
+      "csharp-lsp@claude-plugins-official",
+      "typescript-lsp@claude-plugins-official",
+      "mattpocock-skills@claude-plugins-official",
+      "andrej-karpathy-skills@karpathy-skills",
+      "caveman@caveman",
+      "sdw@ai-workshop"
+    ]
+  },
   "tools": [
-    { "command": "git", "winget": "Git.Git" },
-    { "command": "gh", "winget": "GitHub.cli" },
-    { "command": "go", "winget": "GoLang.Go" },
-    { "command": "node", "winget": "OpenJS.NodeJS.LTS" },
-    { "command": "dotnet", "winget": "Microsoft.DotNet.SDK.9" },
-    { "command": "az", "winget": "Microsoft.AzureCLI" }
+    { "command": "git", "winget": "Git.Git", "brew": "git", "set": "core" },
+    { "command": "gh", "winget": "GitHub.cli", "brew": "gh", "set": "core" },
+    { "command": "go", "winget": "GoLang.Go", "brew": "go", "set": "core" },
+    { "command": "node", "winget": "OpenJS.NodeJS.LTS", "brew": "node", "set": "ato" },
+    { "command": "dotnet", "winget": "Microsoft.DotNet.SDK.9", "brew": "dotnet", "set": "ato" },
+    { "command": "az", "winget": "Microsoft.AzureCLI", "brew": "azure-cli", "set": "ato" }
   ],
   "languageServers": [
     "dotnet tool install --global csharp-ls",

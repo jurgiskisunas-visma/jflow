@@ -18,8 +18,8 @@
   "validationSlots": [
     {
       "name": "native",
-      "acquire": "pwsh -NoProfile -File C:/Users/jurgis.kisunas/.claude/hooks/jcrew-ui-lock.ps1 -Acquire -ProjectRoot D:\\Projects\\ATO -Task <key>",
-      "release": "pwsh -NoProfile -File C:/Users/jurgis.kisunas/.claude/hooks/jcrew-ui-lock.ps1 -Release -ProjectRoot D:\\Projects\\ATO -Task <key>",
+      "acquire": "pwsh -NoProfile -File $HOME/.claude/hooks/jcrew-ui-lock.ps1 -Acquire -ProjectRoot D:\\Projects\\ATO -Task <key>",
+      "release": "pwsh -NoProfile -File $HOME/.claude/hooks/jcrew-ui-lock.ps1 -Release -ProjectRoot D:\\Projects\\ATO -Task <key>",
       "start": "agent ato-agents:service-runner",
       "exercise": "agent ato-agents:ui-tester",
       "stop": ""
@@ -27,8 +27,8 @@
     {
       "name": "aspire",
       "_note": "Second stack on ports 15xxx in D:\\Projects\\ato-host; runs beside the native one. Not yet used by the pipeline: start.ps1 may not return, and the branch under test must be checked out in ato-host's own service folders.",
-      "acquire": "pwsh -NoProfile -File C:/Users/jurgis.kisunas/.claude/hooks/jcrew-ui-lock.ps1 -Acquire -ProjectRoot D:\\Projects\\ato-host -Task <key>",
-      "release": "pwsh -NoProfile -File C:/Users/jurgis.kisunas/.claude/hooks/jcrew-ui-lock.ps1 -Release -ProjectRoot D:\\Projects\\ato-host -Task <key>",
+      "acquire": "pwsh -NoProfile -File $HOME/.claude/hooks/jcrew-ui-lock.ps1 -Acquire -ProjectRoot D:\\Projects\\ato-host -Task <key>",
+      "release": "pwsh -NoProfile -File $HOME/.claude/hooks/jcrew-ui-lock.ps1 -Release -ProjectRoot D:\\Projects\\ato-host -Task <key>",
       "start": "D:\\Projects\\ato-host\\start.ps1",
       "exercise": "agent ato-agents:ui-tester against http://host.docker.internal:15019",
       "stop": "D:\\Projects\\ato-host\\stop.ps1"
