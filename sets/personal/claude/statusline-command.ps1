@@ -8,7 +8,7 @@ $data = $input_json | ConvertFrom-Json
 $loc = $data.workspace.current_dir
 if (-not $loc) { $loc = $data.workspace.project_dir }
 if (-not $loc) { $loc = $data.cwd }
-$home_dir = $env:USERPROFILE
+$home_dir = $HOME
 if ($loc -and $home_dir -and $loc.StartsWith($home_dir)) {
     $loc = '~' + $loc.Substring($home_dir.Length)
 }

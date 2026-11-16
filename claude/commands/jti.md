@@ -1,6 +1,6 @@
 ---
 description: JTI — J the Implementer (Sonnet). Take a JTPS instruction document and implement it literally, with tests and a verified build gate; no design decisions, no review round — review happens once, before the PR.
-argument-hint: <path to approach doc | ATO-12345 | "continue">
+argument-hint: <path to approach doc | PROJ-123 | "continue">
 ---
 
 Launch the `j-the-implementer` agent (JTI) via the Agent tool with this task:

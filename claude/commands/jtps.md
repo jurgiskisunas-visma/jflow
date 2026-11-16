@@ -1,6 +1,6 @@
 ---
 description: JTPS — J the Problem Solver. Turn a Jira ticket or task description into a reviewed, battle-tested implementation instruction.
-argument-hint: <ATO-12345 | task description>
+argument-hint: <PROJ-123 | task description>
 ---
 
 Launch the `j-the-problem-solver` agent (JTPS) via the Agent tool with this task:

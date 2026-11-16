@@ -1,5 +1,5 @@
 # Table-driven tests for user-guard.ps1. Usage: pwsh -NoProfile -File user-guard.tests.ps1 [-Script <path>]
-param([string]$Script = (Join-Path $PSScriptRoot '..\user-guard.ps1'))
+param([string]$Script = (Join-Path $PSScriptRoot '../user-guard.ps1'))
 
 $jira = 'mcp__claude_ai_Atlassian_Jira__'
 $slack = 'mcp__claude_ai_Slack__'

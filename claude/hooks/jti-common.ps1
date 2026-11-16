@@ -9,7 +9,7 @@ function Get-Sha256Hex([string]$Text) {
 function Get-ReceiptPath([string]$WorktreeRoot) {
     $normalized = $WorktreeRoot.ToLowerInvariant().Replace('\', '/').TrimEnd('/')
     $key = Get-Sha256Hex $normalized
-    Join-Path $env:TEMP "claude/jti-gate/$key.json"
+    Join-Path ([IO.Path]::GetTempPath()) "claude/jti-gate/$key.json"
 }
 
 # HEAD commit + tracked diff + untracked files (path and content hash), so that a

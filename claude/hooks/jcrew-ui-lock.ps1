@@ -1,4 +1,4 @@
-# One UI-validation slot per project root (for example D:\Projects\ATO).
+# One UI-validation slot per project root (the folder that holds the project's main checkout).
 #
 # The main checkout, its build, its running services and the browser are one
 # shared unit per project. Whoever holds the lock may touch them; everyone else
@@ -10,8 +10,8 @@
 #   -Status   prints who holds it, or "free". Exit 0.
 #
 # Usage:
-#   pwsh -NoProfile -File ~/.claude/hooks/jcrew-ui-lock.ps1 -Acquire -ProjectRoot D:\Projects\ATO -Task ATO-20097
-#   pwsh -NoProfile -File ~/.claude/hooks/jcrew-ui-lock.ps1 -Release -ProjectRoot D:\Projects\ATO -Task ATO-20097
+#   pwsh -NoProfile -File ~/.claude/hooks/jcrew-ui-lock.ps1 -Acquire -ProjectRoot <project root> -Task PROJ-123
+#   pwsh -NoProfile -File ~/.claude/hooks/jcrew-ui-lock.ps1 -Release -ProjectRoot <project root> -Task PROJ-123
 
 [CmdletBinding(DefaultParameterSetName = 'Status')]
 param(
@@ -33,7 +33,7 @@ function Get-Sha256Hex([string]$Text) {
 }
 
 $normalized = (Resolve-Path -LiteralPath $ProjectRoot).Path.ToLowerInvariant().Replace('\', '/').TrimEnd('/')
-$lockDir = Join-Path $env:TEMP 'claude/jcrew-locks'
+$lockDir = Join-Path ([IO.Path]::GetTempPath()) 'claude/jcrew-locks'
 $lockPath = Join-Path $lockDir "$(Get-Sha256Hex $normalized).lock"
 New-Item -ItemType Directory -Force -Path $lockDir | Out-Null
 

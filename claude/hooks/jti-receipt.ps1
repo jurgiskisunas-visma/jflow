@@ -10,7 +10,7 @@
 #       -Gates "build=0,lint=0,test=0" -NewWarnings 0
 #
 # New warnings that are genuinely out of scope pass the gate only when justified:
-#   ... -NewWarnings 2 -JustifiedWarnings 2 -Note "CS0618 from upstream package, tracked in ATO-123"
+#   ... -NewWarnings 2 -JustifiedWarnings 2 -Note "CS0618 from upstream package, tracked in PROJ-123"
 #
 # Before reporting a hand-back to JTPS (tree may be partial or reverted):
 #   pwsh -NoProfile -File ~/.claude/hooks/jti-receipt.ps1 -WorktreeRoot <path> -HandBack
