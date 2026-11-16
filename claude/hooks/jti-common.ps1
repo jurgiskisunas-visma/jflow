@@ -1,5 +1,17 @@
-# Shared by jti-receipt.ps1 (writer) and jti-gate.ps1 (checker). Both sides must
-# compute the receipt path and the tree fingerprint identically.
+# Shared by jti-receipt.ps1 (writer), jti-gate.ps1 (checker) and jcrew-ui-lock.ps1. Writer and
+# checker must compute the receipt path and the tree fingerprint identically.
+
+# State lives under the user's own ~/.claude, never the shared temp folder: on Linux and macOS
+# another user could plant a receipt, a lock or a symlink in /tmp.
+function Get-StateDir([string]$Name) {
+    $dir = Join-Path $HOME ".claude/state/$Name"
+    $created = New-Item -ItemType Directory -Force -Path $dir
+    foreach ($item in $created, $created.Parent) {
+        if ($item.LinkType) { throw "refusing to use $($item.FullName): it is a link" }
+        if (-not $IsWindows) { chmod 700 $item.FullName }
+    }
+    $dir
+}
 
 function Get-Sha256Hex([string]$Text) {
     $bytes = [Text.Encoding]::UTF8.GetBytes($Text)
@@ -9,7 +21,7 @@ function Get-Sha256Hex([string]$Text) {
 function Get-ReceiptPath([string]$WorktreeRoot) {
     $normalized = $WorktreeRoot.ToLowerInvariant().Replace('\', '/').TrimEnd('/')
     $key = Get-Sha256Hex $normalized
-    Join-Path ([IO.Path]::GetTempPath()) "claude/jti-gate/$key.json"
+    Join-Path (Get-StateDir 'jti-gate') "$key.json"
 }
 
 # HEAD commit + tracked diff + untracked files (path and content hash), so that a

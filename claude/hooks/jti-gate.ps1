@@ -120,7 +120,7 @@ try {
 # mis-scoped matcher must never gate an unrelated agent.
 if ($payload -and $payload.agent_type -and $payload.agent_type -ne 'j-the-implementer') { Exit-Allow }
 
-$receiptDir = Join-Path ([IO.Path]::GetTempPath()) 'claude/jti-gate'
+$receiptDir = Get-StateDir 'jti-gate'
 
 # Preferred: the receipt for the worktree the hook's cwd points at. Fallback: when
 # the subagent worked in its own worktree the hook may report the parent session's
