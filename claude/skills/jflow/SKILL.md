@@ -83,7 +83,7 @@ For a question, a security concern or an improvement idea. No code changes.
 
 ## Track: review
 
-For a colleague's PR. Draft comments to `review.md` in the task folder: only behaviour, correctness, real test gaps and rollout; no code-preference comments. The human picks; posting goes through the approval gate. Never resolve another person's thread.
+For a colleague's PR. Use the `j-peer-review` skill (`/jpeerreview` starts it directly): scope, tier, reviewers, the draft in `review.md`, the gate and the posting are defined there.
 
 ## Improve (after every close)
 

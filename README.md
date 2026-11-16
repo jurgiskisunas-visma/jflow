@@ -52,9 +52,10 @@ Without the parameter the installer keeps the root it used before, and on a firs
 |---|---|
 | `claude/jflow-rules.md` | The rules the flow needs in every session; imported from `~/.claude/CLAUDE.md` |
 | `claude/skills/jflow` | Pipeline v2: implement, investigate and review tracks |
+| `claude/skills/j-peer-review` | Review of a colleague's PR: inbox scope, risk tier, the owner's lens (`lens.md`), drafted comments, gate, posting. `/jpeerreview` |
 | `claude/skills/*` | General skills: `write-for-review`, `clean-code`, `friction-to-skill` |
 | `claude/agents` | JTPS (planner, `j-the-problem-solver`) and JTI (implementer, `j-the-implementer`) |
-| `claude/commands` | `/jflow`, `/jtps`, `/jti` |
+| `claude/commands` | `/jflow`, `/jpeerreview`, `/jtps`, `/jti` |
 | `claude/hooks` | `user-guard.ps1` (secret-file guard and outbound approval gate), `jcrew-ui-lock.ps1` (validation slot lock), implementer gate, tests |
 | `jplan/` | The ledger tool in Go, with tests |
 | `sets/ato/claude` | ATO only: `j-crew` and `/jcrew`, `harden-pr`, `write-for-review-ato`, `ato-company-id-lookup`, `handling-bug-bounty-reports`, `servicebus-lock-storm` |
