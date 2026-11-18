@@ -2,7 +2,7 @@
 
 An agentic development workflow for Claude Code: a task ledger (`jplan`), a pipeline (`/jflow`), safety hooks, agents, skills and the plugin sets they rely on. This repo is the source of truth; `~/.claude` holds an installed copy.
 
-Runs on Windows, macOS and Linux. The idea, the build log and the improvement paths are in [docs/how-it-works.md](docs/how-it-works.md).
+Runs on Windows, macOS and Linux. What you type and where you are asked is in [docs/usage.md](docs/usage.md). The idea, the build log and the improvement paths are in [docs/how-it-works.md](docs/how-it-works.md).
 
 ## New machine
 
@@ -63,7 +63,7 @@ Without the parameter the installer keeps the root it used before, and on a firs
 | `sets/personal/claude` | The owner's status line |
 | `personal/CLAUDE.md` | The owner's own user-level rules; installed only with `-Personal` |
 | `plugins.json` | Marketplaces, plugins and tools in sets: `core`, `ato`, `eaccounting`, `personal` |
-| `docs/` | How it works, build log, improvement paths |
+| `docs/` | Usage guide; how it works, build log, improvement paths |
 
 ## Daily use
 
@@ -73,7 +73,7 @@ jplan new myproject PROJ-123 title="..." type=implement
 jplan idea "something to look at later"
 ```
 
-In Claude Code: `/jflow PROJ-123`, or `/jflow investigate <question>`. A project without a profile gets one on first use: the flow asks for the repos, the check commands and the Jira prefix, and writes `<planning root>/_profiles/<project>.json`.
+In Claude Code: `/jflow PROJ-123`, `/jflow investigate <question>`, or `/jpeerreview` for the PRs that request your review. Each stage, both gates and every `jplan` command are in [docs/usage.md](docs/usage.md). A project without a profile gets one on first use: the flow asks for the repos, the check commands and the Jira prefix, and writes `<planning root>/_profiles/<project>.json`.
 
 ## Changing the workflow
 
