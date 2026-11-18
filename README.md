@@ -4,6 +4,60 @@ An agentic development workflow for Claude Code: a task ledger (`jplan`), a pipe
 
 Runs on Windows, macOS and Linux. What you type and where you are asked is in [docs/usage.md](docs/usage.md). The idea, the build log and the improvement paths are in [docs/how-it-works.md](docs/how-it-works.md).
 
+## Why
+
+Mining five weeks of the owner's own Claude sessions (to 2026-11-11) gave three numbers. Each one became a part of the design.
+
+| Finding | What it showed | The part that answers it |
+|---|---|---|
+| 65% of all weighted tokens sat in nine chat sessions older than a week | The task lived in the chat | The ledger: state in files, one task per session |
+| "What's left?" was asked 17 times | Nobody, human or agent, knew the state | A status and a `next` line per task: `jplan ls` |
+| 15 stray PR approvals from one prompt | Nothing stood between the agent and the outside | Gates in hooks and scripts, not in prompts |
+
+## The idea
+
+The agent writes the code. You decide twice: once at the plan, before anything is written, and once at the evidence, before anything is merged. Between those two points nothing depends on the agent remembering an instruction. Every gate is a hook or a script.
+
+## How one task moves
+
+```mermaid
+flowchart LR
+    I[Intake] --> P[Plan]
+    P --> G1{{Plan gate: you}}
+    G1 --> B[Implement]
+    B --> V[Verify]
+    V --> R[Review by risk]
+    R -->|findings, max 3 rounds| B
+    R --> T[Validate]
+    T --> D[Draft PR]
+    D --> G2{{Evidence gate: you}}
+    G2 --> C[Close]
+    C --> M[Improve]
+```
+
+| Stop | Ledger status | What happens |
+|---|---|---|
+| Intake | `todo` | The task gets a folder in the ledger |
+| Plan | `active` | The planner reads the code and writes `plan.md` |
+| **Plan gate** | `waiting` | The task does not move until you approve the plan |
+| Implement, Verify, Review | `active` | Code in a worktree, the project's own build and tests, review at a depth that follows risk. Findings go back to Implement, three rounds at most |
+| Validate, Draft PR | `active`, then `review` | A check on a running stack, then a draft PR |
+| **Evidence gate** | `waiting` | You read the evidence before the PR leaves draft |
+| Close, Improve | `done` | After merge the task closes. Improve reads the statistics across tasks and proposes one change to the workflow |
+
+Every stop writes its state to the ledger (`task.json`, `plan.md`, `evidence/`, `handoff.md`), so a fresh session picks the task up from the files alone.
+
+## Many tasks at once
+
+One task is easy to hold in your head. In practice several run at once, each in its own thread, and each stops at a different gate. `jplan ls` lists every open task with its status and what it waits for.
+
+The Mayor is an opt-in overseer for exactly this: a small program that the OS scheduler starts every 10 minutes, at zero tokens, to join GitHub, threads, sessions and the ledger into one board and an inbox. It is on trial on branch `trial/jmayor` and is not part of `main` until the trial has passed.
+
+## Measured so far
+
+- First task through `/jflow`: a CI run for a pull request went from 36 to 41 minutes down to 18m31s, with the same 8,163 tests.
+- The ledger tool takes 25 ms per call, against 343 to 538 ms for the PowerShell script it replaced. That is cheap enough to update after every stage.
+
 ## New machine
 
 1. Install Claude Code and sign in.
