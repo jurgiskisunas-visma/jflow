@@ -20,20 +20,9 @@ The agent writes the code. You decide twice: once at the plan, before anything i
 
 ## How one task moves
 
-```mermaid
-flowchart LR
-    I[Intake] --> P[Plan]
-    P --> G1{{Plan gate: you}}
-    G1 --> B[Implement]
-    B --> V[Verify]
-    V --> R[Review by risk]
-    R -->|findings, max 3 rounds| B
-    R --> T[Validate]
-    T --> D[Draft PR]
-    D --> G2{{Evidence gate: you}}
-    G2 --> C[Close]
-    C --> M[Improve]
-```
+![The jflow pipeline: a task moves as a dot through eleven stops, two of them gates that wait for you](docs/img/pipeline.svg)
+
+The white dot is one task. The two amber stops are yours. The dashed arc is the fix loop.
 
 | Stop | Ledger status | What happens |
 |---|---|---|
@@ -48,6 +37,8 @@ flowchart LR
 Every stop writes its state to the ledger (`task.json`, `plan.md`, `evidence/`, `handoff.md`), so a fresh session picks the task up from the files alone.
 
 ## Many tasks at once
+
+![Six task lanes fan out from one point; two amber dots are parked at a gate, one dashed lane is a session with no task](docs/img/many.svg)
 
 One task is easy to hold in your head. In practice several run at once, each in its own thread, and each stops at a different gate. `jplan ls` lists every open task with its status and what it waits for.
 

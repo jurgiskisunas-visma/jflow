@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1760" height="780" viewBox="0 0 1760 780" role="img" aria-labelledby="t d">
+<title id="t">One task becomes many</title>
+<desc id="d">Six task lanes fan out from one starting point. Dots move along four of them. Two amber dots are parked at a gate and wait for a human. The last lane is dashed: a session with no task.</desc>
+<style>
+text { font-family: Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; font-size: 26px; fill: #A9B4D0; }
+.mono { font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace; font-size: 24px; }
+.w { fill: #EEF1F8; }
+.amber { fill: #FFB454; }
+.chip { fill: #111933; stroke: #2A3558; }
+.chipw { fill: #111933; stroke: #FFB454; stroke-width: 2; }
+.chipo { fill: #0A0F1E; stroke: #2A3558; }
+</style>
+<rect width="1760" height="780" rx="28" fill="#0A0F1E"/>
+<g transform="translate(48 40)">
+<text x="0" y="36">Every one stops at a different gate, in a different thread.</text>
+<text x="0" y="72">Which is waiting for you right now?</text>
+<path d="M40 400 C170 400 130 150 260 150 H1080 M40 400 C170 400 130 250 260 250 H1080 M40 400 C170 400 130 350 260 350 H1080 M40 400 C170 400 130 450 260 450 H1080 M40 400 C170 400 130 550 260 550 H1080" fill="none" stroke="#2A3558" stroke-width="5" stroke-linecap="round"/>
+<path d="M40 400 C170 400 130 650 260 650 H1080" fill="none" stroke="#2A3558" stroke-width="5" stroke-linecap="round" stroke-dasharray="4 16"/>
+<circle cx="1080" cy="150" r="6" fill="#5C6A93"/>
+<circle cx="1080" cy="250" r="6" fill="#5C6A93"/>
+<circle cx="1080" cy="350" r="6" fill="#5C6A93"/>
+<circle cx="1080" cy="450" r="6" fill="#5C6A93"/>
+<circle cx="1080" cy="550" r="6" fill="#5C6A93"/>
+<rect x="-9" y="-9" width="18" height="18" transform="translate(520 150) rotate(45)" fill="#0A0F1E" stroke="#FFB454" stroke-width="3"/>
+<rect x="-9" y="-9" width="18" height="18" transform="translate(900 150) rotate(45)" fill="#0A0F1E" stroke="#FFB454" stroke-width="3"/>
+<rect x="-9" y="-9" width="18" height="18" transform="translate(520 250) rotate(45)" fill="#0A0F1E" stroke="#FFB454" stroke-width="3"/>
+<rect x="-9" y="-9" width="18" height="18" transform="translate(900 250) rotate(45)" fill="#0A0F1E" stroke="#FFB454" stroke-width="3"/>
+<rect x="-9" y="-9" width="18" height="18" transform="translate(760 350) rotate(45)" fill="#0A0F1E" stroke="#FFB454" stroke-width="3"/>
+<rect x="-9" y="-9" width="18" height="18" transform="translate(820 450) rotate(45)" fill="#0A0F1E" stroke="#FFB454" stroke-width="3"/>
+<rect x="-9" y="-9" width="18" height="18" transform="translate(520 550) rotate(45)" fill="#0A0F1E" stroke="#FFB454" stroke-width="3"/>
+<rect x="-9" y="-9" width="18" height="18" transform="translate(900 550) rotate(45)" fill="#0A0F1E" stroke="#FFB454" stroke-width="3"/>
+<circle cx="520" cy="250" r="20" fill="#FFB454" opacity="0.3"><animate attributeName="r" values="14;30;14" dur="3.6s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.45;0.12;0.45" dur="3.6s" repeatCount="indefinite"/></circle>
+<circle cx="900" cy="550" r="20" fill="#FFB454" opacity="0.3"><animate attributeName="r" values="14;30;14" dur="3.6s" begin="1.2s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.45;0.12;0.45" dur="3.6s" begin="1.2s" repeatCount="indefinite"/></circle>
+<circle cx="520" cy="250" r="11" fill="#FFB454"/>
+<circle cx="900" cy="550" r="11" fill="#FFB454"/>
+<circle cx="40" cy="400" r="11" fill="#5EEAD4">
+<animateMotion path="M0 0 C130 0 90 -250 220 -250 H1040" dur="10s" repeatCount="indefinite"/>
+</circle>
+<circle cx="40" cy="400" r="11" fill="#5EEAD4">
+<animateMotion path="M0 0 C130 0 90 -50 220 -50 H1040" dur="13s" repeatCount="indefinite"/>
+</circle>
+<circle cx="40" cy="400" r="11" fill="#5EEAD4">
+<animateMotion path="M0 0 C130 0 90 50 220 50 H1040" dur="8s" repeatCount="indefinite"/>
+</circle>
+<circle cx="40" cy="400" r="11" fill="#7C88A8">
+<animateMotion path="M0 0 C130 0 90 250 220 250 H1040" dur="17s" repeatCount="indefinite"/>
+</circle>
+<circle cx="40" cy="400" r="17" fill="#0A0F1E" stroke="#EEF1F8" stroke-width="4"/>
+
+<rect class="chip" x="1130" y="122" width="534" height="56" rx="28"/>
+<text class="mono w" x="1154" y="158">PROJ-412 · implement · active</text>
+<rect class="chipw" x="1130" y="222" width="534" height="56" rx="28"/>
+<text class="mono amber" x="1154" y="258">PROJ-398 · waiting: approve plan</text>
+<rect class="chip" x="1130" y="322" width="534" height="56" rx="28"/>
+<text class="mono w" x="1154" y="358">cache-question · investigate</text>
+<rect class="chip" x="1130" y="422" width="534" height="56" rx="28"/>
+<text class="mono w" x="1154" y="458">api#231 · review · drafting</text>
+<rect class="chipw" x="1130" y="522" width="534" height="56" rx="28"/>
+<text class="mono amber" x="1154" y="558">PROJ-377 · waiting: evidence</text>
+<rect class="chipo" x="1130" y="622" width="534" height="56" rx="28"/>
+<text class="mono" x="1154" y="658">no task · a session you forgot</text>
+</g>
+</svg>

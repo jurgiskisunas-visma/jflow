@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1760" height="720" viewBox="0 0 1760 720" role="img" aria-labelledby="t d">
+<title id="t">The jflow pipeline</title>
+<desc id="d">A task travels as a dot along a rail through eleven stops: intake, plan, plan gate, implement, verify, review, validate, draft pull request, evidence gate, close, improve. The two gates wait for a human. A dashed arc loops from review back to implement, three rounds at most. Every stop writes its state to the ledger.</desc>
+<style>
+text { font-family: Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; font-size: 24px; fill: #EEF1F8; }
+.b { font-weight: 700; }
+.c { text-anchor: middle; }
+.mint { fill: #5EEAD4; }
+.soft { fill: #A9B4D0; }
+.ink { fill: #0A0F1E; }
+.mono { font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace; }
+.node { fill: #111933; stroke: #2A3558; stroke-width: 2; }
+.gate { fill: #FFB454; }
+.glow { fill: #FFB454; }
+</style>
+<rect width="1760" height="720" rx="28" fill="#0A0F1E"/>
+<g transform="translate(48 40)">
+<path d="M112 110 H1552 C1680 110 1680 500 1552 500 H400" fill="none" stroke="#2A3558" stroke-width="6" stroke-linecap="round"/>
+<path d="M1552 110 C1500 0 1030 0 976 110" fill="none" stroke="#A9B4D0" stroke-width="3" stroke-dasharray="10 10" opacity="0.7"/>
+<path d="M112 110 V142 M400 110 V142 M688 110 V142 M976 110 V142 M1264 110 V142 M1552 110 V142 M1552 500 V532 M1264 500 V532 M976 500 V532 M688 500 V532 M400 500 V532" fill="none" stroke="#2A3558" stroke-width="2"/>
+<path d="M248 100 L260 110 L248 120 M536 100 L548 110 L536 120 M824 100 L836 110 L824 120 M1416 490 L1404 500 L1416 510 M1128 490 L1116 500 L1128 510 M840 490 L828 500 L840 510 M552 490 L540 500 L552 510" fill="none" stroke="#5C6A93" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+<rect class="glow" x="566" y="132" width="244" height="124" rx="24" opacity="0.1"><animate attributeName="opacity" values="0.06;0.34;0.06" dur="3.6s" repeatCount="indefinite"/></rect>
+<rect class="glow" x="854" y="522" width="244" height="124" rx="24" opacity="0.1"><animate attributeName="opacity" values="0.06;0.34;0.06" dur="3.6s" begin="1.8s" repeatCount="indefinite"/></rect>
+
+<rect class="node" x="0" y="142" width="224" height="104" rx="16"/>
+<text class="c b" x="112" y="186">Intake</text><text class="c soft" x="112" y="220">todo</text>
+<rect class="node" x="288" y="142" width="224" height="104" rx="16"/>
+<text class="c b" x="400" y="186">Plan</text><text class="c mint" x="400" y="220">active</text>
+<rect class="gate" x="576" y="142" width="224" height="104" rx="16"/>
+<text class="c b ink" x="688" y="186">Plan gate</text><text class="c ink" x="688" y="220">waiting on you</text>
+<rect class="node" x="864" y="142" width="224" height="104" rx="16"/>
+<text class="c b" x="976" y="186">Implement</text><text class="c mint" x="976" y="220">active</text>
+<rect class="node" x="1152" y="142" width="224" height="104" rx="16"/>
+<text class="c b" x="1264" y="186">Verify</text><text class="c mint" x="1264" y="220">active</text>
+<rect class="node" x="1440" y="142" width="224" height="104" rx="16"/>
+<text class="c b" x="1552" y="186">Review</text><text class="c mint" x="1552" y="220">active</text>
+
+<rect x="0" y="335" width="1480" height="76" rx="16" fill="#070B16" stroke="#2A3558"/>
+<text class="mono" x="32" y="381"><tspan class="mint">ledger</tspan><tspan dx="36">task.json · plan.md · evidence/ · handoff.md</tspan><tspan class="soft" dx="36">state lives in files, not in the chat</tspan></text>
+
+<rect class="node" x="1440" y="532" width="224" height="104" rx="16"/>
+<text class="c b" x="1552" y="576">Validate</text><text class="c mint" x="1552" y="610">active</text>
+<rect class="node" x="1152" y="532" width="224" height="104" rx="16"/>
+<text class="c b" x="1264" y="576">Draft PR</text><text class="c mint" x="1264" y="610">review</text>
+<rect class="gate" x="864" y="532" width="224" height="104" rx="16"/>
+<text class="c b ink" x="976" y="576">Evidence gate</text><text class="c ink" x="976" y="610">waiting on you</text>
+<rect class="node" x="576" y="532" width="224" height="104" rx="16"/>
+<text class="c b" x="688" y="576">Close</text><text class="c mint" x="688" y="610">done</text>
+<rect class="node" x="288" y="532" width="224" height="104" rx="16"/>
+<text class="c b" x="400" y="576">Improve</text><text class="c soft" x="400" y="610">learn</text>
+
+<text class="c soft" x="1265" y="78">max 3 fix rounds</text>
+<text class="soft" x="0" y="562" style="font-size:22px">The dot is the task.</text>
+<text class="soft" x="0" y="594" style="font-size:22px">Each stop changes its</text>
+<text class="soft" x="0" y="626" style="font-size:22px">status in the ledger.</text>
+
+<circle cx="112" cy="110" r="10" fill="#0A0F1E" stroke="#5EEAD4" stroke-width="4"/>
+<circle cx="400" cy="110" r="10" fill="#0A0F1E" stroke="#5EEAD4" stroke-width="4"/>
+<circle cx="688" cy="110" r="12" fill="#0A0F1E" stroke="#FFB454" stroke-width="5"/>
+<circle cx="976" cy="110" r="10" fill="#0A0F1E" stroke="#5EEAD4" stroke-width="4"/>
+<circle cx="1264" cy="110" r="10" fill="#0A0F1E" stroke="#5EEAD4" stroke-width="4"/>
+<circle cx="1552" cy="110" r="10" fill="#0A0F1E" stroke="#5EEAD4" stroke-width="4"/>
+<circle cx="1552" cy="500" r="10" fill="#0A0F1E" stroke="#5EEAD4" stroke-width="4"/>
+<circle cx="1264" cy="500" r="10" fill="#0A0F1E" stroke="#5EEAD4" stroke-width="4"/>
+<circle cx="976" cy="500" r="12" fill="#0A0F1E" stroke="#FFB454" stroke-width="5"/>
+<circle cx="688" cy="500" r="10" fill="#0A0F1E" stroke="#5EEAD4" stroke-width="4"/>
+<circle cx="400" cy="500" r="10" fill="#0A0F1E" stroke="#5EEAD4" stroke-width="4"/>
+
+<circle cx="1552" cy="110" r="7" fill="#A9B4D0">
+<animateMotion path="M0 0 C-52 -110 -522 -110 -576 0" dur="3.2s" repeatCount="indefinite"/>
+</circle>
+<circle cx="112" cy="110" r="7" fill="#5EEAD4" opacity="0.35">
+<animateMotion path="M0 0 H1440 C1568 0 1568 390 1440 390 H288" dur="16s" begin="0.7s" repeatCount="indefinite"/>
+</circle>
+<circle cx="112" cy="110" r="10" fill="#5EEAD4" opacity="0.6">
+<animateMotion path="M0 0 H1440 C1568 0 1568 390 1440 390 H288" dur="16s" begin="0.35s" repeatCount="indefinite"/>
+</circle>
+<circle cx="112" cy="110" r="28" fill="#5EEAD4" opacity="0.22">
+<animateMotion path="M0 0 H1440 C1568 0 1568 390 1440 390 H288" dur="16s" repeatCount="indefinite"/>
+</circle>
+<circle cx="112" cy="110" r="14" fill="#EEF1F8" stroke="#5EEAD4" stroke-width="4">
+<animateMotion path="M0 0 H1440 C1568 0 1568 390 1440 390 H288" dur="16s" repeatCount="indefinite"/>
+</circle>
+</g>
+</svg>
